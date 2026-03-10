@@ -1,0 +1,104 @@
+/* ═══════════════════════════════════════════════════════
+   App.css — Component-level overrides & polish
+   ═══════════════════════════════════════════════════════ */
+
+#root {
+  max-width: 100%;
+  margin: 0 auto;
+  position: relative;
+  isolation: isolate;
+}
+
+/* ── Loading screen animation ── */
+@keyframes loading-bar {
+  0% { width: 0%; }
+  40% { width: 40%; }
+  80% { width: 85%; }
+  100% { width: 100%; }
+}
+
+/* ── Navbar scroll shadow ── */
+nav .shadow-glass {
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.04);
+}
+
+/* ── Hero glow blobs — reduced on mobile for perf ── */
+@media (max-width: 767px) {
+  #home > .absolute {
+    width: 200px !important;
+    height: 200px !important;
+    blur: 60px !important;
+  }
+}
+
+/* ── About section — floating badges stay within bounds ── */
+@media (max-width: 480px) {
+  #about .relative.group {
+    margin: 2rem auto;
+  }
+
+  #about .absolute.-top-4,
+  #about .absolute.-bottom-4 {
+    display: none;
+  }
+}
+
+@media (min-width: 481px) {
+  #about .relative.group {
+    margin: 0 auto;
+  }
+}
+
+/* ── Skills — equal-height grid cells ── */
+#skills .grid > div {
+  display: flex;
+  min-height: 0;
+}
+
+/* ── Projects — gradient area consistent height ── */
+#projects .h-44 {
+  min-height: 11rem;
+}
+
+/* ── Certificates — timeline alignment ── */
+@media (min-width: 768px) {
+  #certificates .w-px {
+    left: 50%;
+    transform: translateX(-50%);
+  }
+}
+
+/* ── Contact form — input ring glow ── */
+#contact input:focus,
+#contact textarea:focus {
+  box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.15);
+}
+
+/* ── Footer — bottom spacing for scroll-to-top button ── */
+footer {
+  padding-bottom: 2rem;
+}
+
+@media (max-width: 480px) {
+  footer {
+    padding-bottom: 4rem; /* Leave space for scroll-to-top FAB */
+  }
+}
+
+/* ── Section divider — clean centering ── */
+.relative.h-24,
+.relative.h-32 {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ── Smooth page section reveal ── */
+section {
+  contain: content;
+}
+
+/* ── Background 3D canvas — never cause scroll ── */
+.fixed.inset-0.-z-10 canvas {
+  pointer-events: none;
+}

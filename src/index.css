@@ -1,0 +1,873 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ═══════════════════════════════════════════════════════
+   LEGENDARY DESIGN SYSTEM — Maharshi Patel Portfolio
+   Complete, Responsive, Production-Ready
+   ═══════════════════════════════════════════════════════ */
+
+/* ─────────────────────────────────────────────────────
+   1. CSS CUSTOM PROPERTIES (Design Tokens)
+   ───────────────────────────────────────────────────── */
+
+:root {
+  /* Core palette - Cosmic Universe Theme */
+  --color-primary: #030206;
+  --color-secondary: #080512;
+  --color-accent: #8b5cf6;
+  --color-accent-light: #a855f7;
+  --color-accent-dark: #6d28d9;
+  --color-neon-cyan: #06b6d4;
+  --color-neon-purple: #c084fc;
+  --color-neon-pink: #f472b6;
+
+  /* Spacing scale */
+  --section-padding-y: clamp(4rem, 8vw, 8rem);
+  --section-padding-x: clamp(1rem, 4vw, 2rem);
+  --container-max: 80rem;
+
+  /* Typography */
+  font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  line-height: 1.6;
+  font-weight: 400;
+  color-scheme: dark;
+  color: rgba(255, 255, 255, 0.92);
+  background-color: var(--color-primary);
+
+  /* Rendering */
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
+  /* Transition timings */
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-smooth: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+/* ─────────────────────────────────────────────────────
+   2. RESET & BASE
+   ───────────────────────────────────────────────────── */
+
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-accent) transparent;
+  -webkit-text-size-adjust: 100%;
+  overflow-x: hidden;
+}
+
+body {
+  min-width: 320px;
+  min-height: 100vh;
+  min-height: 100dvh;
+  /* modern mobile viewport fix */
+  background: var(--color-primary);
+  color: white;
+  overflow-x: hidden;
+  -webkit-tap-highlight-color: transparent;
+  /* remove tap highlight on mobile */
+}
+
+#root {
+  max-width: 100%;
+  overflow-x: hidden;
+  position: relative;
+}
+
+/* ─────────────────────────────────────────────────────
+   3. SCROLLBAR (Webkit + Firefox)
+   ───────────────────────────────────────────────────── */
+
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, var(--color-accent), var(--color-neon-cyan));
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, var(--color-neon-purple), var(--color-neon-blue));
+}
+
+/* ─────────────────────────────────────────────────────
+   4. SELECTION
+   ───────────────────────────────────────────────────── */
+
+::selection {
+  background: rgba(139, 92, 246, 0.4);
+  color: #fff;
+}
+
+::-moz-selection {
+  background: rgba(139, 92, 246, 0.4);
+  color: #fff;
+}
+
+/* ─────────────────────────────────────────────────────
+   5. MEDIA DEFAULTS — responsive images / video
+   ───────────────────────────────────────────────────── */
+
+img,
+video,
+svg {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* ─────────────────────────────────────────────────────
+   6. TYPOGRAPHY — prevent overflow globally
+   ───────────────────────────────────────────────────── */
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+a,
+span,
+li {
+  word-break: break-word;
+  overflow-wrap: break-word;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* ─────────────────────────────────────────────────────
+   7. FORM ELEMENTS — cross-browser normalisation
+   ───────────────────────────────────────────────────── */
+
+input,
+textarea,
+select,
+button {
+  font-family: inherit;
+  font-size: inherit;
+  color: inherit;
+}
+
+input,
+textarea,
+select {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  border-radius: 0.75rem;
+  /* consistent rounded corners */
+}
+
+/* focus ring for accessibility */
+input:focus-visible,
+textarea:focus-visible,
+button:focus-visible,
+a:focus-visible {
+  outline: 2px solid var(--color-accent-light);
+  outline-offset: 2px;
+}
+
+/* Remove inner padding and border in Firefox */
+button::-moz-focus-inner {
+  border-style: none;
+  padding: 0;
+}
+
+/* ═══════════════════════════════════════════════════════
+   COMPONENT LAYER — Reusable utility classes
+   ═══════════════════════════════════════════════════════ */
+
+@layer components {
+
+  /* ── Glassmorphism ── */
+  .glass {
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+  }
+
+  .glass-strong {
+    background: rgba(255, 255, 255, 0.06);
+    backdrop-filter: blur(30px);
+    -webkit-backdrop-filter: blur(30px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .glass-card {
+    background: linear-gradient(135deg,
+        rgba(255, 255, 255, 0.05) 0%,
+        rgba(255, 255, 255, 0.02) 100%);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  }
+
+  .glass-card:hover {
+    border-color: rgba(255, 255, 255, 0.14);
+  }
+
+  /* ── Gradient Text — animated ── */
+  .gradient-text {
+    background: linear-gradient(135deg, #a855f7, #60a5fa, #c084fc, #06b6d4);
+    background-size: 300% 300%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+    animation: gradient-shift 8s ease infinite;
+  }
+
+  .gradient-text-static {
+    background: linear-gradient(135deg, #8b5cf6, #06b6d4);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+  }
+
+  /* ── Magnetic Button ── */
+  .magnetic-btn {
+    position: relative;
+    transition: all 0.35s var(--ease-smooth);
+    will-change: transform, box-shadow;
+  }
+
+  .magnetic-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 40px -10px rgba(6, 182, 212, 0.5);
+    /* Cyan glow */
+  }
+
+  .magnetic-btn:active {
+    transform: translateY(0px) scale(0.98);
+  }
+
+  /* ── Section Typography ── */
+  .section-heading {
+    font-size: clamp(1.75rem, 5vw, 3.75rem);
+    line-height: 1.15;
+    font-weight: 700;
+    font-family: 'Space Grotesk', sans-serif;
+    letter-spacing: -0.025em;
+  }
+
+  .section-subheading {
+    font-size: clamp(0.95rem, 2vw, 1.1rem);
+    color: #9ca3af;
+    max-width: 40rem;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 1rem;
+    font-weight: 300;
+    line-height: 1.7;
+  }
+
+  /* ── Hover Lift ── */
+  .hover-lift {
+    transition: all 0.4s var(--ease-smooth);
+    will-change: transform;
+  }
+
+  .hover-lift:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 20px 60px -15px rgba(139, 92, 246, 0.4);
+    /* Purple glow */
+  }
+
+  /* ── Line Clamp Utilities ── */
+  .line-clamp-1 {
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .line-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .line-clamp-3 {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════
+   KEYFRAME ANIMATIONS
+   ═══════════════════════════════════════════════════════ */
+
+@keyframes gradient-shift {
+
+  0%,
+  100% {
+    background-position: 0% 50%;
+  }
+
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+@keyframes float-particle {
+
+  0%,
+  100% {
+    transform: translateY(0) translateX(0);
+    opacity: 0;
+  }
+
+  10% {
+    opacity: 1;
+  }
+
+  90% {
+    opacity: 1;
+  }
+
+  50% {
+    transform: translateY(-100vh) translateX(20px);
+  }
+
+  100% {
+    transform: translateY(-100vh) translateX(-20px);
+    opacity: 0;
+  }
+}
+
+@keyframes loading-bar {
+  0% {
+    width: 0%;
+  }
+
+  40% {
+    width: 40%;
+  }
+
+  80% {
+    width: 85%;
+  }
+
+  100% {
+    width: 100%;
+  }
+}
+
+/* Subtle pulsing glow for ambient backgrounds */
+@keyframes ambient-glow {
+
+  0%,
+  100% {
+    opacity: 0.3;
+    transform: scale(1);
+  }
+
+  50% {
+    opacity: 0.6;
+    transform: scale(1.08);
+  }
+}
+
+/* ═══════════════════════════════════════════════════════
+   HERO SECTION — responsive refinements
+   ═══════════════════════════════════════════════════════ */
+
+/* Ensure hero takes full viewport height properly on mobile */
+#home {
+  min-height: 100vh;
+  min-height: 100dvh;
+}
+
+/* ═══════════════════════════════════════════════════════
+   NAVBAR — responsive polish
+   ═══════════════════════════════════════════════════════ */
+
+/* Ensure nav z-index and safe area on devices with notches */
+nav {
+  padding-top: env(safe-area-inset-top, 0);
+}
+
+/* ═══════════════════════════════════════════════════════
+   ABOUT SECTION — image & floating badges responsive
+   ═══════════════════════════════════════════════════════ */
+
+/* Keep floating badges inside viewport on very small screens */
+@media (max-width: 374px) {
+
+  .absolute.-top-4.-right-4,
+  .absolute.-bottom-4.-left-4 {
+    position: relative;
+    top: auto;
+    right: auto;
+    bottom: auto;
+    left: auto;
+    margin-top: 0.5rem;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════
+   CERTIFICATES TIMELINE — mobile adaptation
+   ═══════════════════════════════════════════════════════ */
+
+/* On mobile, stack everything linearly */
+@media (max-width: 767px) {
+  #certificates .space-y-6>div {
+    flex-direction: column !important;
+  }
+
+  /* Hide the desktop timeline dot on mobile */
+  #certificates .hidden.md\:flex {
+    display: none !important;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════
+   CONTACT FORM — floating label and input polish
+   ═══════════════════════════════════════════════════════ */
+
+/* Ensure floating labels have a solid background when floated up */
+#contact form .relative label {
+  background: transparent;
+  padding: 0 4px;
+  z-index: 1;
+}
+
+/* Autofill styles for dark theme inputs */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+textarea:-webkit-autofill {
+  -webkit-text-fill-color: white;
+  -webkit-box-shadow: 0 0 0 1000px rgba(3, 0, 20, 0.97) inset;
+  box-shadow: 0 0 0 1000px rgba(3, 0, 20, 0.97) inset;
+  border-color: rgba(124, 58, 237, 0.4);
+  caret-color: white;
+  transition: background-color 5000s ease-in-out 0s;
+  /* prevent flash */
+}
+
+/* ═══════════════════════════════════════════════════════
+   PROJECTS — bento grid responsive helpers
+   ═══════════════════════════════════════════════════════ */
+
+/* On tablet (2 cols), let featured items span full width */
+@media (min-width: 768px) and (max-width: 1023px) {
+  #projects .grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* ═══════════════════════════════════════════════════════
+   SKILLS — card sizing consistency
+   ═══════════════════════════════════════════════════════ */
+
+/* Give skill cards a minimum height so they look uniform */
+#skills .glass-card {
+  min-height: 160px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ═══════════════════════════════════════════════════════
+   LEETCODE — stats panel responsive
+   ═══════════════════════════════════════════════════════ */
+
+/* On small screens stack the profile + stats vertically */
+@media (max-width: 1023px) {
+  #leetcode .grid {
+    grid-template-columns: 1fr;
+  }
+
+  #leetcode .lg\:col-span-2,
+  #leetcode .lg\:col-span-3 {
+    grid-column: span 1;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════
+   FOOTER — responsive grid
+   ═══════════════════════════════════════════════════════ */
+
+@media (max-width: 767px) {
+  footer .grid {
+    text-align: center;
+  }
+
+  footer .grid>div {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+}
+
+/* Scroll-to-top button safe area on mobile */
+footer .fixed.right-6.bottom-6 {
+  right: max(1.5rem, env(safe-area-inset-right, 1.5rem));
+  bottom: max(1.5rem, env(safe-area-inset-bottom, 1.5rem));
+}
+
+/* ═══════════════════════════════════════════════════════
+   SECTION DIVIDER — responsive height
+   ═══════════════════════════════════════════════════════ */
+
+/* Smaller dividers on mobile */
+@media (max-width: 640px) {
+  .relative.h-24 {
+    height: 3rem;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════
+   CERTIFICATE MODAL — fullscreen overlay polish
+   ═══════════════════════════════════════════════════════ */
+
+/* Ensure modal is always centered and scrollable */
+.fixed.inset-0.z-\[100\] {
+  overflow-y: auto;
+  padding: 1rem;
+}
+
+@media (max-width: 640px) {
+  .fixed.inset-0.z-\[100\] .relative.w-full {
+    margin: auto 0;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════
+   MOBILE-SPECIFIC GLOBAL FIXES
+   ═══════════════════════════════════════════════════════ */
+
+/* Touch devices — disable custom cursor */
+@media (pointer: coarse) {
+  * {
+    cursor: auto !important;
+  }
+}
+
+/* Prevent iOS text resize on landscape */
+@media screen and (max-width: 1024px) {
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════
+   RESPONSIVE BREAKPOINT POLISHING
+   ═══════════════════════════════════════════════════════ */
+
+/* ── Extra-small (< 375px) ── */
+@media (max-width: 374px) {
+  body {
+    font-size: 14px;
+  }
+
+  .section-heading {
+    font-size: 1.5rem !important;
+  }
+
+  .section-subheading {
+    font-size: 0.85rem;
+  }
+
+  /* Tighten section padding */
+  section {
+    padding-left: 0.75rem !important;
+    padding-right: 0.75rem !important;
+  }
+
+  /* Scale down hero name */
+  #home h1 {
+    font-size: 2.5rem !important;
+  }
+}
+
+/* ── Small (375px – 639px) ── */
+@media (min-width: 375px) and (max-width: 639px) {
+  #home h1 {
+    font-size: clamp(2.5rem, 10vw, 3.5rem) !important;
+  }
+
+  /* Stack hero CTA buttons fully */
+  #home .flex.flex-col.sm\:flex-row {
+    gap: 0.75rem;
+  }
+
+  /* Reduce card padding on mobile */
+  .glass-card {
+    padding: 1.25rem;
+  }
+
+  /* Full-width project cards */
+  #projects .grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  /* Contact section single column */
+  #contact .grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ── Medium (640px – 767px) ── */
+@media (min-width: 640px) and (max-width: 767px) {
+  #projects .grid {
+    grid-template-columns: 1fr;
+    gap: 1.25rem;
+  }
+
+  /* Skills 2 cols */
+  #skills .grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* ── Tablet (768px – 1023px) ── */
+@media (min-width: 768px) and (max-width: 1023px) {
+
+  /* Skills 3 cols */
+  #skills .grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  /* Projects 2 cols */
+  #projects .grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  /* Footer 2 cols */
+  footer .grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* ── Desktop (1024px – 1279px) ── */
+@media (min-width: 1024px) and (max-width: 1279px) {
+
+  /* Skills 4 cols */
+  #skills .grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  /* Projects 3 cols */
+  #projects .grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+/* ── Large Desktop (1280px+) ── */
+@media (min-width: 1280px) {
+  .section-heading {
+    font-size: 4rem;
+  }
+
+  /* Max-width container safety */
+  .max-w-7xl {
+    max-width: 80rem;
+    margin-left: auto;
+    margin-right: auto;
+  }
+}
+
+/* ── Ultra-wide (1920px+) ── */
+@media (min-width: 1920px) {
+  :root {
+    font-size: 18px;
+  }
+
+  .max-w-7xl {
+    max-width: 90rem;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════
+   ACCESSIBILITY — Reduced Motion
+   ═══════════════════════════════════════════════════════ */
+
+@media (prefers-reduced-motion: reduce) {
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .gradient-text {
+    animation: none;
+    background-size: 100% 100%;
+  }
+
+  .hover-lift:hover {
+    transform: none;
+  }
+
+  .magnetic-btn:hover {
+    transform: none;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════
+   ACCESSIBILITY — High Contrast Mode
+   ═══════════════════════════════════════════════════════ */
+
+@media (prefers-contrast: high) {
+
+  .glass,
+  .glass-strong,
+  .glass-card {
+    border-color: rgba(255, 255, 255, 0.3);
+  }
+
+  .text-gray-400,
+  .text-gray-500 {
+    color: rgba(255, 255, 255, 0.75) !important;
+  }
+
+  .section-subheading {
+    color: rgba(255, 255, 255, 0.8);
+  }
+}
+
+/* ═══════════════════════════════════════════════════════
+   PRINT STYLES
+   ═══════════════════════════════════════════════════════ */
+
+@media print {
+  body {
+    background: white;
+    color: black;
+    font-size: 12pt;
+  }
+
+  .glass,
+  .glass-strong,
+  .glass-card {
+    background: white;
+    border: 1px solid #ddd;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    box-shadow: none;
+  }
+
+  .gradient-text,
+  .gradient-text-static {
+    background: none;
+    -webkit-background-clip: unset;
+    background-clip: unset;
+    -webkit-text-fill-color: #333;
+    color: #333;
+  }
+
+  nav,
+  footer,
+  canvas,
+  .fixed,
+  .particle-field {
+    display: none !important;
+  }
+
+  section {
+    page-break-inside: avoid;
+    break-inside: avoid;
+    padding: 1rem 0;
+  }
+
+  a[href]::after {
+    content: " (" attr(href) ")";
+    font-size: 0.8em;
+    color: #666;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════
+   LANDSCAPE MOBILE — extra stabilisation
+   ═══════════════════════════════════════════════════════ */
+
+@media (max-height: 500px) and (orientation: landscape) {
+  #home {
+    min-height: auto;
+    padding-top: 4rem;
+    padding-bottom: 4rem;
+  }
+
+  /* Reduce glow blob sizes */
+  #home .absolute.blur-\[120px\],
+  #home .absolute.blur-\[100px\],
+  #home .absolute.blur-\[80px\] {
+    width: 200px !important;
+    height: 200px !important;
+  }
+
+  /* Compact section padding */
+  section {
+    padding-top: 3rem !important;
+    padding-bottom: 3rem !important;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════
+   PERFORMANCE — GPU ACCELERATION HINTS
+   ═══════════════════════════════════════════════════════ */
+
+/* Promote animated / fixed elements to compositor layer */
+.fixed,
+canvas,
+.animate-pulse,
+[style*="animation"] {
+  will-change: auto;
+  transform: translateZ(0);
+}
+
+/* Keep backdrop-filter performant */
+.glass,
+.glass-strong,
+.glass-card {
+  will-change: auto;
+  contain: layout style;
+}
+
+/* ═══════════════════════════════════════════════════════
+   SMOOTH TRANSITION POLISH
+   ═══════════════════════════════════════════════════════ */
+
+/* All interactive elements get smooth transitions by default */
+a,
+button,
+input,
+textarea {
+  transition-property: color, background-color, border-color, box-shadow, opacity, transform;
+  transition-duration: 0.3s;
+  transition-timing-function: var(--ease-smooth);
+}
