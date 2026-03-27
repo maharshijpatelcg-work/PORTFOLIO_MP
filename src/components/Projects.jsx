@@ -27,7 +27,7 @@ const Projects = () => {
       featured: true,
     },
     {
-      title: 'State Analytics API',
+      title: 'Ai-Onboarding-Engine',
       description: 'RESTful API for state statistics with advanced filtering, sorting, aggregation, and pagination — all powered by in-memory data processing.',
       tech: ['Node.js', 'Express', 'REST API'],
       github: '#',
