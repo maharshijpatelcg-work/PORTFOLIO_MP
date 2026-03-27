@@ -1,13 +1,44 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { motion } from 'framer-motion';
-import { FiMail, FiGithub, FiLinkedin, FiTwitter, FiSend, FiMapPin, FiPhone } from 'react-icons/fi';
+import { FiMail, FiGithub, FiLinkedin, FiTwitter, FiSend, FiMapPin, FiPhone, FiCheck, FiAlertCircle } from 'react-icons/fi';
+import emailjs from '@emailjs/browser';
 
 const Contact = () => {
+  const formRef = useRef();
   const [formState, setFormState] = useState({ name: '', email: '', message: '' });
   const [focused, setFocused] = useState(null);
+  const [sending, setSending] = useState(false);
+  const [sendStatus, setSendStatus] = useState(null); // 'success' | 'error' | null
 
   const handleChange = (e) => {
     setFormState(prev => ({ ...prev, [e.target.name]: e.target.value }));
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (!formState.name || !formState.email || !formState.message) return;
+
+    setSending(true);
+    setSendStatus(null);
+
+    emailjs.sendForm(
+      'service_il139gg',
+      'template_elha7yn',
+      formRef.current,
+      '8o6_5yVwaCeQR6-mB'
+    )
+      .then(() => {
+        setSendStatus('success');
+        setFormState({ name: '', email: '', message: '' });
+        setTimeout(() => setSendStatus(null), 4000);
+      })
+      .catch(() => {
+        setSendStatus('error');
+        setTimeout(() => setSendStatus(null), 4000);
+      })
+      .finally(() => {
+        setSending(false);
+      });
   };
 
   const socialLinks = [
@@ -143,7 +174,7 @@ const Contact = () => {
           viewport={{ once: true }}
           className="lg:col-span-3"
         >
-          <form className="glass-card rounded-2xl p-8 space-y-6">
+          <form ref={formRef} onSubmit={handleSubmit} className="glass-card rounded-2xl p-8 space-y-6">
             {/* Name */}
             <motion.div variants={itemVariants} className="relative">
               <label className={`absolute left-4 transition-all duration-300 pointer-events-none font-mono text-xs tracking-wider uppercase ${focused === 'name' || formState.name
@@ -205,10 +236,39 @@ const Contact = () => {
             <motion.button
               variants={itemVariants}
               type="submit"
-              className="group w-full py-4 bg-gradient-to-r from-accent to-neon-cyan text-white font-display font-bold rounded-xl magnetic-btn flex items-center justify-center gap-3 text-lg"
+              disabled={sending}
+              className={`group w-full py-4 text-white font-display font-bold rounded-xl magnetic-btn flex items-center justify-center gap-3 text-lg transition-all duration-300 ${
+                sendStatus === 'success'
+                  ? 'bg-green-500'
+                  : sendStatus === 'error'
+                  ? 'bg-red-500'
+                  : 'bg-gradient-to-r from-accent to-neon-cyan'
+              } ${sending ? 'opacity-70 cursor-not-allowed' : ''}`}
             >
-              Send Message
-              <FiSend className="group-hover:translate-x-1 group-hover:-translate-y-0.5 transition-transform" />
+              {sending ? (
+                <>
+                  <svg className="animate-spin h-5 w-5" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                  </svg>
+                  Sending...
+                </>
+              ) : sendStatus === 'success' ? (
+                <>
+                  <FiCheck size={20} />
+                  Message Sent!
+                </>
+              ) : sendStatus === 'error' ? (
+                <>
+                  <FiAlertCircle size={20} />
+                  Failed to send. Try again.
+                </>
+              ) : (
+                <>
+                  Send Message
+                  <FiSend className="group-hover:translate-x-1 group-hover:-translate-y-0.5 transition-transform" />
+                </>
+              )}
             </motion.button>
           </form>
         </motion.div>
