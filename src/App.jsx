@@ -27,7 +27,7 @@ function App() {
   }
 
   return (
-    <div className="app min-h-screen bg-transparent text-white relative">
+    <div className="app min-h-screen bg-transparent text-white relative md:pl-16">
       <CustomCursor />
 
       {/* Set the stunning universe image as the fixed background */}

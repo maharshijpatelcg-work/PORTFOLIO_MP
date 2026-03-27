@@ -7,11 +7,12 @@ const Projects = () => {
 
   const projects = [
     {
-      title: 'CropSphere',
-      description: 'A smart agriculture platform with real-time weather monitoring, risk alerts, and crop management. Built with Node.js backend and modern React frontend.',
+      title: 'CropPilot',
+      description: 'AI-powered crop intelligence for Indian farmers — real-time weather, soil conditions, and market data to simplify every farming decision from planning to selling.',
       tech: ['React', 'Node.js', 'MongoDB', 'Express'],
-      github: '#',
-      live: '#',
+      github: 'https://github.com/maharshijpatelcg-work/SU_2026',
+      live: 'https://croppilot-su.vercel.app/',
+      image: '/croppilot-preview.png',
       gradient: 'from-green-500/20 to-emerald-500/20',
       accentColor: '#10b981',
       featured: true,
@@ -116,6 +117,15 @@ const Projects = () => {
           >
             {/* Top gradient area */}
             <div className={`relative h-44 bg-gradient-to-br ${project.gradient} p-6 flex flex-col justify-between overflow-hidden`}>
+              {/* Project image if available */}
+              {project.image && (
+                <img
+                  src={project.image}
+                  alt={project.title}
+                  className="absolute inset-0 w-full h-full object-cover object-top opacity-40 group-hover:opacity-60 transition-opacity duration-700"
+                />
+              )}
+
               {/* Animated background orb */}
               <div
                 className="absolute -bottom-10 -right-10 w-40 h-40 rounded-full blur-[40px] opacity-30 group-hover:opacity-60 transition-all duration-700"

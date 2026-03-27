@@ -1,9 +1,22 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { FiCode, FiCpu, FiMonitor, FiZap, FiCalendar, FiMapPin } from 'react-icons/fi';
 import Maharshi from '../assets/Maharshi.svg';
 
 const About = () => {
+  const [problemsSolved, setProblemsSolved] = useState(null);
+
+  useEffect(() => {
+    fetch('https://alfa-leetcode-api.onrender.com/MaharshiPatel24/solved')
+      .then(res => res.json())
+      .then(data => {
+        if (data.solvedProblem !== undefined) {
+          setProblemsSolved(data.solvedProblem);
+        }
+      })
+      .catch(() => {});
+  }, []);
+
   const highlights = [
     { icon: <FiCode />, label: 'Web Development', desc: 'Full-Stack Apps' },
     { icon: <FiCpu />, label: 'Problem Solving', desc: 'DSA + Algorithms' },
@@ -12,9 +25,9 @@ const About = () => {
   ];
 
   const stats = [
-    { value: '10+', label: 'Projects Built' },
-    { value: '120+', label: 'Problems Solved' },
-    { value: '5+', label: 'Certifications' },
+    { value: '5+', label: 'Projects Built' },
+    { value: problemsSolved !== null ? `${problemsSolved}+` : '...', label: 'Problems Solved' },
+    { value: '3+', label: 'Certifications' },
   ];
 
   const contentVariants = {
