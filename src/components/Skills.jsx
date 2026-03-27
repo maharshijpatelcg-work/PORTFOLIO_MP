@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FaHtml5, FaCss3Alt, FaJs, FaReact, FaJava, FaNodeJs, FaGitAlt } from 'react-icons/fa';
-import { SiMongodb, SiC, SiTailwindcss, SiExpress, SiPostman } from 'react-icons/si';
+import { FaHtml5, FaCss3Alt, FaJs, FaReact, FaNodeJs, FaGitAlt } from 'react-icons/fa';
+import { SiMongodb, SiC, SiTailwindcss, SiPostman } from 'react-icons/si';
 
 const Skills = () => {
   const [activeCategory, setActiveCategory] = useState('all');
@@ -20,10 +20,8 @@ const Skills = () => {
     { name: 'React', icon: <FaReact />, color: '#61DAFB', level: 82, category: 'frontend' },
     { name: 'Tailwind CSS', icon: <SiTailwindcss />, color: '#06B6D4', level: 85, category: 'frontend' },
     { name: 'Node.js', icon: <FaNodeJs />, color: '#339933', level: 70, category: 'backend' },
-    { name: 'Express.js', icon: <SiExpress />, color: '#FFFFFF', level: 68, category: 'backend' },
     { name: 'MongoDB', icon: <SiMongodb />, color: '#47A248', level: 72, category: 'backend' },
     { name: 'C Language', icon: <SiC />, color: '#A8B9CC', level: 75, category: 'backend' },
-    { name: 'Java', icon: <FaJava />, color: '#ED8B00', level: 65, category: 'backend' },
     { name: 'Git', icon: <FaGitAlt />, color: '#F05032', level: 78, category: 'tools' },
     { name: 'Postman', icon: <SiPostman />, color: '#FF6C37', level: 80, category: 'tools' },
   ];

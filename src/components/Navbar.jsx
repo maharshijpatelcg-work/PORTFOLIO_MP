@@ -50,18 +50,15 @@ const Navbar = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className={`flex items-center justify-between rounded-2xl px-6 py-3 transition-all duration-500 ${
           scrolled
-            ? 'glass-strong shadow-glass'
+            ? 'bg-white/[0.03] border border-white/[0.06] shadow-lg'
             : 'bg-transparent'
         }`}>
           {/* Logo */}
-          <a href="#home" className="flex items-center gap-3 group">
+          <a href="#home" className="flex items-center group">
             <div className="relative w-10 h-10 flex items-center justify-center">
               <div className="absolute inset-0 bg-gradient-to-br from-accent to-neon-cyan rounded-lg opacity-80 group-hover:opacity-100 transition-opacity" />
               <span className="relative text-white font-display font-bold text-lg">M</span>
             </div>
-            <span className="font-display font-semibold text-lg hidden sm:block text-white group-hover:text-accent-light transition-colors">
-              Maharshi<span className="text-accent-light">.</span>
-            </span>
           </a>
 
           {/* Desktop Nav Links */}
@@ -88,23 +85,13 @@ const Navbar = () => {
             ))}
           </div>
 
-          {/* CTA + Mobile Menu */}
-          <div className="flex items-center gap-3">
-            <a
-              href="#contact"
-              className="hidden md:flex items-center gap-2 px-5 py-2 bg-gradient-to-r from-accent to-neon-cyan text-white text-sm font-semibold rounded-full magnetic-btn hover:shadow-glow-md"
-            >
-              <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
-              Hire Me
-            </a>
-
-            <button
-              onClick={() => setIsOpen(!isOpen)}
-              className="md:hidden p-2 text-gray-400 hover:text-white rounded-lg glass transition-all"
-            >
-              {isOpen ? <FiX size={22} /> : <FiMenu size={22} />}
-            </button>
-          </div>
+          {/* Mobile Menu Toggle */}
+          <button
+            onClick={() => setIsOpen(!isOpen)}
+            className="md:hidden p-2 text-gray-400 hover:text-white rounded-lg glass transition-all"
+          >
+            {isOpen ? <FiX size={22} /> : <FiMenu size={22} />}
+          </button>
         </div>
       </div>
 
@@ -136,13 +123,7 @@ const Navbar = () => {
                   {link.name}
                 </motion.a>
               ))}
-              <a
-                href="#contact"
-                onClick={() => setIsOpen(false)}
-                className="mt-2 px-4 py-3 bg-gradient-to-r from-accent to-neon-cyan text-white text-sm font-semibold rounded-xl text-center"
-              >
-                Hire Me
-              </a>
+
             </div>
           </motion.div>
         )}
