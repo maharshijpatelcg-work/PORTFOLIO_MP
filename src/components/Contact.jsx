@@ -11,9 +11,9 @@ const Contact = () => {
   };
 
   const socialLinks = [
-    { Icon: FiGithub, href: '#', label: 'GitHub', color: '#fff' },
-    { Icon: FiLinkedin, href: '#', label: 'LinkedIn', color: '#0077B5' },
-    { Icon: FiTwitter, href: '#', label: 'Twitter', color: '#1DA1F2' },
+    { Icon: FiGithub, href: 'https://github.com/maharshijpatelcg-work', label: 'GitHub', color: '#fff' },
+    { Icon: FiLinkedin, href: 'https://www.linkedin.com/in/maharshi-patel-1b08b0395/', label: 'LinkedIn', color: '#0077B5' },
+    { Icon: FiTwitter, href: 'https://x.com/Maharshi_245707', label: 'Twitter', color: '#1DA1F2' },
   ];
 
   const contentVariants = {
@@ -85,7 +85,7 @@ const Contact = () => {
           {/* Contact cards */}
           <motion.div variants={itemVariants} className="space-y-3">
             <a
-              href="mailto:maharshipatel.dev@gmail.com"
+              href="mailto:maharshi.j.patel.cg@gmail.com"
               className="group flex items-center gap-4 p-4 glass-card rounded-xl hover:border-accent/30 transition-all duration-300"
             >
               <div className="p-3 bg-accent/10 rounded-lg group-hover:bg-accent/20 transition-colors">
@@ -93,7 +93,7 @@ const Contact = () => {
               </div>
               <div>
                 <p className="text-xs text-gray-500 font-mono uppercase tracking-wider">Email</p>
-                <p className="text-sm font-medium text-white">maharshipatel.dev@gmail.com</p>
+                <p className="text-sm font-medium text-white">maharshi.j.patel.cg@gmail.com</p>
               </div>
             </a>
 

@@ -71,10 +71,16 @@ const Footer = () => {
           <motion.div variants={itemVariants}>
             <h4 className="text-sm font-mono text-gray-400 uppercase tracking-widest mb-4">Connect</h4>
             <div className="flex gap-3">
-              {[FiGithub, FiLinkedin, FiTwitter].map((Icon, i) => (
+              {[
+                { Icon: FiGithub, href: 'https://github.com/maharshijpatelcg-work' },
+                { Icon: FiLinkedin, href: 'https://www.linkedin.com/in/maharshi-patel-1b08b0395/' },
+                { Icon: FiTwitter, href: 'https://x.com/Maharshi_245707' },
+              ].map(({ Icon, href }, i) => (
                 <a
                   key={i}
-                  href="#"
+                  href={href}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="p-2.5 glass rounded-lg text-gray-500 hover:text-white hover:bg-white/10 transition-all duration-300"
                 >
                   <Icon size={18} />
