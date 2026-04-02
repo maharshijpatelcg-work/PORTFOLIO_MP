@@ -1,9 +1,22 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useCallback } from 'react';
 
 const CustomCursor = () => {
   const dotRef = useRef(null);
   const trailRef = useRef(null);
-  const [isHovering, setIsHovering] = useState(false);
+  const isHoveringRef = useRef(false);
+
+  // Use a ref-based approach instead of state to avoid re-renders
+  const updateScale = useCallback(() => {
+    const dot = dotRef.current;
+    const trail = trailRef.current;
+    if (!dot || !trail) return;
+
+    const dotScale = isHoveringRef.current ? 1.5 : 1;
+    const trailScale = isHoveringRef.current ? 1.8 : 1;
+
+    dot.style.transform = dot.style.transform.replace(/scale\([^)]+\)/, `scale(${dotScale})`);
+    trail.style.transform = trail.style.transform.replace(/scale\([^)]+\)/, `scale(${trailScale})`);
+  }, []);
 
   useEffect(() => {
     // Disable on mobile/touch devices
@@ -23,8 +36,8 @@ const CustomCursor = () => {
     const onMouseMove = (e) => {
       mouseX = e.clientX;
       mouseY = e.clientY;
-      // Dot follows instantly
-      dot.style.transform = `translate(${mouseX}px, ${mouseY}px) translate(-50%, -50%) scale(${isHovering ? 1.5 : 1})`;
+      const dotScale = isHoveringRef.current ? 1.5 : 1;
+      dot.style.transform = `translate(${mouseX}px, ${mouseY}px) translate(-50%, -50%) scale(${dotScale})`;
     };
 
     window.addEventListener('mousemove', onMouseMove, { passive: true });
@@ -34,32 +47,39 @@ const CustomCursor = () => {
     const animate = () => {
       trailX += (mouseX - trailX) * 0.15;
       trailY += (mouseY - trailY) * 0.15;
-      trail.style.transform = `translate(${trailX}px, ${trailY}px) translate(-50%, -50%) scale(${isHovering ? 1.8 : 1})`;
+      const trailScale = isHoveringRef.current ? 1.8 : 1;
+      trail.style.transform = `translate(${trailX}px, ${trailY}px) translate(-50%, -50%) scale(${trailScale})`;
       animFrameId = requestAnimationFrame(animate);
     };
     animate();
 
-    // Attach hover listeners to interactive elements
-    const attachHoverListeners = () => {
-      const hoverables = document.querySelectorAll('a, button, input, textarea, [role="button"]');
-      hoverables.forEach((el) => {
-        el.style.cursor = 'none';
-        el.addEventListener('mouseenter', () => setIsHovering(true));
-        el.addEventListener('mouseleave', () => setIsHovering(false));
-      });
+    // Attach hover listeners to interactive elements — use event delegation instead of MutationObserver
+    const onMouseOver = (e) => {
+      const target = e.target.closest('a, button, input, textarea, [role="button"]');
+      if (target) {
+        target.style.cursor = 'none';
+        isHoveringRef.current = true;
+      }
     };
 
-    setTimeout(attachHoverListeners, 100);
-    const observer = new MutationObserver(attachHoverListeners);
-    observer.observe(document.body, { childList: true, subtree: true });
+    const onMouseOut = (e) => {
+      const target = e.target.closest('a, button, input, textarea, [role="button"]');
+      if (target) {
+        isHoveringRef.current = false;
+      }
+    };
+
+    document.addEventListener('mouseover', onMouseOver, { passive: true });
+    document.addEventListener('mouseout', onMouseOut, { passive: true });
 
     return () => {
       window.removeEventListener('mousemove', onMouseMove);
+      document.removeEventListener('mouseover', onMouseOver);
+      document.removeEventListener('mouseout', onMouseOut);
       cancelAnimationFrame(animFrameId);
       document.body.style.cursor = 'auto';
-      observer.disconnect();
     };
-  }, [isHovering]);
+  }, []); // Empty dependency array — runs once only
 
   return (
     <>
@@ -73,8 +93,9 @@ const CustomCursor = () => {
           borderRadius: '50%',
           background: '#7c3aed',
           boxShadow: '0 0 12px 4px rgba(124, 58, 237, 0.6), 0 0 24px 8px rgba(124, 58, 237, 0.3)',
-          transition: 'transform 0.05s ease-out, width 0.3s, height 0.3s',
+          transition: 'width 0.3s, height 0.3s',
           willChange: 'transform',
+          transform: 'translate(0px, 0px) translate(-50%, -50%) scale(1)',
         }}
       />
 
@@ -89,6 +110,7 @@ const CustomCursor = () => {
           border: '1.5px solid rgba(124, 58, 237, 0.4)',
           transition: 'width 0.3s, height 0.3s, border-color 0.3s',
           willChange: 'transform',
+          transform: 'translate(0px, 0px) translate(-50%, -50%) scale(1)',
         }}
       />
     </>

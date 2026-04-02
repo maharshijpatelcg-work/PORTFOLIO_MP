@@ -1,18 +1,14 @@
-import React, { useRef, useMemo } from 'react';
+import React, { useRef, useMemo, useState, useEffect } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
-import { Stars } from '@react-three/drei';
 import * as THREE from 'three';
 
-// Realistic planet features, tweaked sizes/speeds for dynamic motion
+// Reduced to 5 planets for performance — removed Mercury and Uranus/Neptune (far away, barely visible)
 const PLANETS = [
-  { name: 'Mercury', color: '#888888', size: 0.2, orbitRadius: 3, speed: 0.8, selfRotateSpeed: 2.0 },
-  { name: 'Venus', color: '#e3bb76', size: 0.4, orbitRadius: 5, speed: 0.6, selfRotateSpeed: -0.5 },
-  { name: 'Earth', color: '#2b82c9', size: 0.45, orbitRadius: 7.5, speed: 0.5, selfRotateSpeed: 1.5 },
-  { name: 'Mars', color: '#c1440e', size: 0.3, orbitRadius: 10, speed: 0.4, selfRotateSpeed: 1.4 },
-  { name: 'Jupiter', color: '#d39c7e', size: 1.2, orbitRadius: 16, speed: 0.2, selfRotateSpeed: 3.0 },
-  { name: 'Saturn', color: '#ead6b8', size: 1.0, orbitRadius: 21, speed: 0.15, selfRotateSpeed: 2.8, hasRing: true },
-  { name: 'Uranus', color: '#4b70dd', size: 0.6, orbitRadius: 26, speed: 0.1, selfRotateSpeed: -1.2 },
-  { name: 'Neptune', color: '#274687', size: 0.55, orbitRadius: 31, speed: 0.08, selfRotateSpeed: 1.1 },
+  { name: 'Venus', color: '#e3bb76', size: 0.35, orbitRadius: 5, speed: 0.4, selfRotateSpeed: -0.3 },
+  { name: 'Earth', color: '#2b82c9', size: 0.4, orbitRadius: 7.5, speed: 0.35, selfRotateSpeed: 1.0 },
+  { name: 'Mars', color: '#c1440e', size: 0.28, orbitRadius: 10, speed: 0.3, selfRotateSpeed: 0.8 },
+  { name: 'Jupiter', color: '#d39c7e', size: 1.0, orbitRadius: 16, speed: 0.15, selfRotateSpeed: 1.8 },
+  { name: 'Saturn', color: '#ead6b8', size: 0.85, orbitRadius: 21, speed: 0.1, selfRotateSpeed: 1.5, hasRing: true },
 ];
 
 const Planet = ({ planet }) => {
@@ -27,7 +23,6 @@ const Planet = ({ planet }) => {
       orbitGroupRef.current.rotation.y = state.clock.getElapsedTime() * planet.speed * 0.5 + randomOffset;
     }
     if (planetRef.current) {
-      // Realistic self-rotation of the planet on its own Y axis
       planetRef.current.rotation.y += delta * planet.selfRotateSpeed;
     }
   });
@@ -35,18 +30,18 @@ const Planet = ({ planet }) => {
   return (
     <group ref={orbitGroupRef}>
       <mesh ref={planetRef} position={[planet.orbitRadius, 0, 0]}>
-        <sphereGeometry args={[planet.size, 64, 64]} />
-        {/* Very low roughness to catch sharp light glimmers, pitch black shadows */}
+        {/* Reduced segments from 64 to 24 — still looks round, much fewer polygons */}
+        <sphereGeometry args={[planet.size, 24, 24]} />
         <meshStandardMaterial
           color={planet.color}
           roughness={0.9}
           metalness={0.1}
         />
 
-        {/* Saturn's Ring - make it realistic overlapping ring */}
+        {/* Saturn's Ring */}
         {planet.hasRing && (
           <mesh rotation={[Math.PI / 2.2, 0, 0]}>
-            <ringGeometry args={[planet.size * 1.4, planet.size * 2.4, 64]} />
+            <ringGeometry args={[planet.size * 1.4, planet.size * 2.4, 32]} />
             <meshStandardMaterial
               color="#d2c1a1"
               side={THREE.DoubleSide}
@@ -61,49 +56,52 @@ const Planet = ({ planet }) => {
   );
 };
 
+// Asteroid belt using InstancedMesh for massive performance gain
+// Instead of 600 individual meshes, we use 1 instanced mesh
 const AsteroidBelt = () => {
   const meshRef = useRef();
+  const instancedRef = useRef();
+  const count = 150; // Reduced from 600 to 150, with instancing
 
-  // Generate 600 chunky low-poly rocks
-  // Placed between Mars (8) and Jupiter (15)
-  const asteroids = useMemo(() => {
-    const rocks = [];
-    for (let i = 0; i < 600; i++) {
+  const dummy = useMemo(() => new THREE.Object3D(), []);
+
+  // Build instance matrices once
+  useEffect(() => {
+    if (!instancedRef.current) return;
+
+    for (let i = 0; i < count; i++) {
       const radius = 10 + Math.random() * 3.5;
       const angle = Math.random() * Math.PI * 2;
       const x = Math.cos(angle) * radius;
       const z = Math.sin(angle) * radius;
       const y = (Math.random() - 0.5) * 1.0;
 
-      const scale = 0.05 + Math.random() * 0.15;
-      const rotX = Math.random() * Math.PI;
-      const rotY = Math.random() * Math.PI;
-      const rotZ = Math.random() * Math.PI;
+      const scale = 0.05 + Math.random() * 0.12;
 
-      rocks.push({ id: i, position: [x, y, z], rotation: [rotX, rotY, rotZ], scale });
+      dummy.position.set(x, y, z);
+      dummy.rotation.set(Math.random() * Math.PI, Math.random() * Math.PI, Math.random() * Math.PI);
+      dummy.scale.setScalar(scale);
+      dummy.updateMatrix();
+      instancedRef.current.setMatrixAt(i, dummy.matrix);
     }
-    return rocks;
+    instancedRef.current.instanceMatrix.needsUpdate = true;
   }, []);
 
   useFrame((state) => {
     if (meshRef.current) {
-      // Slowly rotate the entire belt 
       meshRef.current.rotation.y = state.clock.getElapsedTime() * 0.1;
     }
   });
 
   return (
     <group ref={meshRef}>
-      {asteroids.map((rock) => (
-        <mesh key={rock.id} position={rock.position} rotation={rock.rotation} scale={rock.scale}>
-          {/* Dodecahedron creates chunky, irregular asteroid rocks */}
-          <dodecahedronGeometry args={[1, 0]} />
-          <meshStandardMaterial color="#4a423b" roughness={1} metalness={0} />
-        </mesh>
-      ))}
+      <instancedMesh ref={instancedRef} args={[null, null, count]}>
+        <dodecahedronGeometry args={[1, 0]} />
+        <meshStandardMaterial color="#4a423b" roughness={1} metalness={0} />
+      </instancedMesh>
     </group>
-  )
-}
+  );
+};
 
 const SolarSystem = () => {
   const systemRef = useRef();
@@ -113,26 +111,25 @@ const SolarSystem = () => {
     const mouseY = state.pointer.y;
 
     if (systemRef.current) {
-      // Very slight terrifying camera drift based on mouse
-      systemRef.current.rotation.x = 0.4 + (mouseY * 0.1);
-      systemRef.current.rotation.y = (mouseX * 0.1);
+      // Lerp for smoother movement instead of direct assignment
+      systemRef.current.rotation.x += (0.4 + mouseY * 0.1 - systemRef.current.rotation.x) * 0.05;
+      systemRef.current.rotation.y += (mouseX * 0.1 - systemRef.current.rotation.y) * 0.05;
     }
   });
 
   return (
     <group ref={systemRef} rotation={[0.4, 0, 0]}>
-      {/* Central light source imitating the bright center of the universe image */}
-      <pointLight position={[0, 0, 0]} intensity={35} distance={150} color="#60a5fa" decay={1.2} />
-      <pointLight position={[0, 0, 0]} intensity={25} distance={80} color="#a855f7" decay={1.5} />
+      {/* Reduced light count and intensity */}
+      <pointLight position={[0, 0, 0]} intensity={25} distance={120} color="#60a5fa" decay={1.5} />
+      <pointLight position={[0, 0, 0]} intensity={15} distance={60} color="#a855f7" decay={1.8} />
 
-      {/* The Asteroid Belt Segment */}
       <AsteroidBelt />
 
-      {/* Orbit path rings (very subtle to match image) */}
+      {/* Orbit path rings — reduced segments from 128 to 64 */}
       {PLANETS.map((planet) => (
         <React.Fragment key={planet.name}>
           <mesh rotation={[Math.PI / 2, 0, 0]}>
-            <ringGeometry args={[planet.orbitRadius - 0.015, planet.orbitRadius + 0.015, 128]} />
+            <ringGeometry args={[planet.orbitRadius - 0.015, planet.orbitRadius + 0.015, 64]} />
             <meshBasicMaterial color="#ffffff" transparent opacity={0.08} side={THREE.DoubleSide} />
           </mesh>
           <Planet planet={planet} />
@@ -143,18 +140,40 @@ const SolarSystem = () => {
 };
 
 const Background3D = () => {
+  const [isVisible, setIsVisible] = useState(true);
+
+  // Pause rendering when tab is not visible
+  useEffect(() => {
+    const handleVisibility = () => {
+      setIsVisible(!document.hidden);
+    };
+    document.addEventListener('visibilitychange', handleVisibility);
+    return () => document.removeEventListener('visibilitychange', handleVisibility);
+  }, []);
+
+  // Don't render on mobile or low-performance devices
+  const [shouldRender, setShouldRender] = useState(true);
+  useEffect(() => {
+    // Skip 3D on mobile (screen width < 768) or devices with < 4 logical cores
+    const isMobile = window.innerWidth < 768;
+    const isLowEnd = navigator.hardwareConcurrency && navigator.hardwareConcurrency < 4;
+    if (isMobile || isLowEnd) {
+      setShouldRender(false);
+    }
+  }, []);
+
+  if (!shouldRender) return null;
+
   return (
-    // Pointer events off so it doesn't block interactions, entirely transparent bg
     <div className="fixed inset-0 -z-10 pointer-events-none">
       <Canvas
         camera={{ position: [0, 15, 35], fov: 45 }}
-        dpr={[1, 2]}
-        gl={{ antialias: true, alpha: true, powerPreference: 'high-performance' }}
+        dpr={[1, 1.5]} // Capped at 1.5 instead of 2 for perf
+        gl={{ antialias: false, alpha: true, powerPreference: 'high-performance' }}
         style={{ background: 'transparent' }}
+        frameloop={isVisible ? 'always' : 'never'} // Stop rendering when tab hidden
       >
-        {/* Slightly higher ambient light so the planets are still visible off-center against the bright background */}
         <ambientLight intensity={0.4} />
-
         <SolarSystem />
       </Canvas>
     </div>
