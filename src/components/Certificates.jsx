@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FiAward, FiExternalLink, FiX, FiCalendar, FiChevronRight } from 'react-icons/fi';
+import { FiAward, FiX, FiCalendar, FiChevronRight } from 'react-icons/fi';
 
 const Certificates = () => {
   const [selectedCert, setSelectedCert] = useState(null);
@@ -14,18 +14,17 @@ const Certificates = () => {
       description: 'Completed AI Tools and ChatGPT workshop — skilled in creating presentations using AI in under 5 min, analysing data using AI in under 30 min, and coding & debugging using AI in under 10 min.',
       skills: ['AI Presentations', 'Data Analysis', 'AI-Powered Coding', 'ChatGPT'],
       image: '/be10x-certificate.png',
-      verifyLink: '#',
       color: '#f59e0b',
       gradient: 'from-amber-500/20 to-yellow-500/20',
     },
     {
       id: 2,
-      title: 'Full Stack Web Development',
+      title: 'Sangam university certificate',
       issuer: 'Udemy',
       date: '2025',
       description: 'Comprehensive course covering React, Node.js, MongoDB, Express.js, and Modern JavaScript ES6+.',
       skills: ['React', 'Node.js', 'MongoDB', 'Express.js'],
-      verifyLink: '#',
+      image: '/Su_certificate.jpeg',
       color: '#8b5cf6',
       gradient: 'from-purple-500/20 to-violet-500/20',
     },
@@ -306,20 +305,6 @@ const Certificates = () => {
                   </div>
                 )}
 
-                {/* Verify button */}
-                <a
-                  href={selectedCert.verifyLink}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="group/btn flex items-center justify-center gap-2 w-full py-3.5 rounded-xl font-semibold text-white transition-all duration-300 hover:shadow-lg hover:scale-[1.01]"
-                  style={{
-                    background: `linear-gradient(135deg, ${selectedCert.color}, ${selectedCert.color}bb)`,
-                    boxShadow: `0 4px 20px ${selectedCert.color}25`,
-                  }}
-                >
-                  <FiExternalLink className="group-hover/btn:rotate-12 transition-transform" />
-                  Verify Credential
-                </a>
               </div>
             </motion.div>
           </motion.div>

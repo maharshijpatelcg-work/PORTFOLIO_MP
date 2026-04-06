@@ -13,7 +13,7 @@ const Certificates = lazy(() => import('./components/Certificates'));
 const LeetCode = lazy(() => import('./components/LeetCode'));
 const Contact = lazy(() => import('./components/Contact'));
 const Footer = lazy(() => import('./components/Footer'));
-const Background3D = lazy(() => import('./components/Background3D'));
+// Background3D removed — premium black theme doesn't need the solar system
 
 // Minimal fallback while lazy chunks load
 const SectionFallback = () => (
@@ -39,18 +39,15 @@ function App() {
     <div className="app min-h-screen bg-transparent text-white relative md:pl-16">
       <CustomCursor />
 
-      {/* Set the stunning universe image as the fixed background */}
+      {/* Premium black geometric background */}
       <div
         className="fixed inset-0 -z-10 bg-cover bg-center bg-no-repeat"
-        style={{ backgroundImage: "url('/universe-bg.jpg')" }}
+        style={{ backgroundImage: "url('/premium-black-bg.png')" }}
       />
-      {/* Dark overlay — removed backdrop-blur for performance */}
-      <div className="fixed inset-0 -z-10 bg-black/60" />
+      {/* Subtle dark overlay to blend content */}
+      <div className="fixed inset-0 -z-10 bg-black/40" />
 
-      {/* Dynamic 3D planets orbiting on top of the universe background */}
-      <Suspense fallback={null}>
-        <Background3D />
-      </Suspense>
+
 
       <Navbar />
 
