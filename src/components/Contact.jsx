@@ -21,19 +21,30 @@ const Contact = () => {
     setSending(true);
     setSendStatus(null);
 
-    emailjs.sendForm(
+    const templateParams = {
+      from_name: formState.name,
+      from_email: formState.email,
+      message: formState.message,
+      to_name: 'Maharshi Patel',
+      reply_to: formState.email,
+    };
+
+    emailjs.send(
       'service_il139gg',
       'template_elha7yn',
-      formRef.current,
-      { publicKey: '8o6_5yVwaCeQR6-mB' }
+      templateParams,
+      '8o6_5yVwaCeQR6-mB'
     )
-      .then(() => {
+      .then((result) => {
+        console.log('EmailJS SUCCESS:', result.status, result.text);
         setSendStatus('success');
         setFormState({ name: '', email: '', message: '' });
         setTimeout(() => setSendStatus(null), 4000);
       })
       .catch((error) => {
-        console.error('FAILED...', error.text || error);
+        console.error('EmailJS FAILED:', error);
+        console.error('Status:', error?.status);
+        console.error('Text:', error?.text);
         setSendStatus('error');
         setTimeout(() => setSendStatus(null), 4000);
       })

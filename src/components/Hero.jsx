@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { BsGithub, BsLinkedin, BsTwitterX, BsInstagram } from 'react-icons/bs';
-import { FiArrowRight, FiDownload } from 'react-icons/fi';
+import { FiArrowRight } from 'react-icons/fi';
 
 const Hero = () => {
   const [text, setText] = useState('');
@@ -135,13 +135,12 @@ const Hero = () => {
           </a>
 
           <a
-            href="/resume.pdf"
+            href="https://resume-mp.vercel.app/"
             target="_blank"
             rel="noopener noreferrer"
             className="group px-8 py-4 rounded-full glass text-white font-semibold flex items-center gap-3 text-lg hover:bg-white/10 transition-all magnetic-btn"
           >
-            <FiDownload className="group-hover:-translate-y-0.5 transition-transform" />
-            Download CV
+            VIEW CV
           </a>
         </motion.div>
 
