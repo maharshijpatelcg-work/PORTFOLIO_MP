@@ -25,14 +25,15 @@ const Contact = () => {
       'service_il139gg',
       'template_elha7yn',
       formRef.current,
-      '8o6_5yVwaCeQR6-mB'
+      { publicKey: '8o6_5yVwaCeQR6-mB' }
     )
       .then(() => {
         setSendStatus('success');
         setFormState({ name: '', email: '', message: '' });
         setTimeout(() => setSendStatus(null), 4000);
       })
-      .catch(() => {
+      .catch((error) => {
+        console.error('FAILED...', error.text || error);
         setSendStatus('error');
         setTimeout(() => setSendStatus(null), 4000);
       })
