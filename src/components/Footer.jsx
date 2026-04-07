@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { FiArrowUp, FiHeart, FiGithub, FiLinkedin, FiTwitter } from 'react-icons/fi';
+import { FiArrowUp, FiHeart, FiGithub, FiLinkedin, FiTwitter, FiInstagram } from 'react-icons/fi';
 
 const Footer = () => {
   const scrollToTop = () => {
@@ -75,6 +75,7 @@ const Footer = () => {
                 { Icon: FiGithub, href: 'https://github.com/maharshijpatelcg-work' },
                 { Icon: FiLinkedin, href: 'https://www.linkedin.com/in/maharshi-patel-1b08b0395/' },
                 { Icon: FiTwitter, href: 'https://x.com/Maharshi_245707' },
+                { Icon: FiInstagram, href: 'https://www.instagram.com/mr._.maharshi_24/' },
               ].map(({ Icon, href }, i) => (
                 <a
                   key={i}

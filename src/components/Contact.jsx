@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react';
 import { motion } from 'framer-motion';
-import { FiMail, FiGithub, FiLinkedin, FiTwitter, FiSend, FiMapPin, FiPhone, FiCheck, FiAlertCircle } from 'react-icons/fi';
+import { FiMail, FiGithub, FiLinkedin, FiTwitter, FiInstagram, FiSend, FiMapPin, FiPhone, FiCheck, FiAlertCircle } from 'react-icons/fi';
 import emailjs from '@emailjs/browser';
 
 const Contact = () => {
@@ -46,6 +46,7 @@ const Contact = () => {
     { Icon: FiGithub, href: 'https://github.com/maharshijpatelcg-work', label: 'GitHub', color: '#fff' },
     { Icon: FiLinkedin, href: 'https://www.linkedin.com/in/maharshi-patel-1b08b0395/', label: 'LinkedIn', color: '#0077B5' },
     { Icon: FiTwitter, href: 'https://x.com/Maharshi_245707', label: 'Twitter', color: '#1DA1F2' },
+    { Icon: FiInstagram, href: 'https://www.instagram.com/mr._.maharshi_24/', label: 'Instagram', color: '#E1306C' },
   ];
 
   const contentVariants = {

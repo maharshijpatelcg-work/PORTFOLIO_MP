@@ -63,7 +63,7 @@ const Hero = () => {
     { Icon: BsGithub, href: 'https://github.com/maharshijpatelcg-work', label: 'GitHub', hoverColor: 'hover:text-white hover:shadow-glow-sm' },
     { Icon: BsLinkedin, href: 'https://www.linkedin.com/in/maharshi-patel-1b08b0395/', label: 'LinkedIn', hoverColor: 'hover:text-blue-400 hover:shadow-glow-sm' },
     { Icon: BsTwitterX, href: 'https://x.com/Maharshi_245707', label: 'Twitter', hoverColor: 'hover:text-white hover:shadow-glow-sm' },
-    { Icon: BsInstagram, href: '#', label: 'Instagram', hoverColor: 'hover:text-pink-400 hover:shadow-glow-pink' },
+    { Icon: BsInstagram, href: 'https://www.instagram.com/mr._.maharshi_24/', label: 'Instagram', hoverColor: 'hover:text-pink-400 hover:shadow-glow-pink' },
   ];
 
   return (
