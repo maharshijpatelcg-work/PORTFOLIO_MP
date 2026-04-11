@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
+import { Helmet } from 'react-helmet';
 import { FiCode, FiCpu, FiMonitor, FiZap, FiCalendar, FiMapPin } from 'react-icons/fi';
 import Maharshi from '../assets/Maharshi.svg';
 
