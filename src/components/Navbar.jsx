@@ -1,33 +1,46 @@
 import React, { useState, useEffect } from 'react';
+import { Link, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FiHome, FiUser, FiCpu, FiFolder, FiAward, FiCode, FiMail, FiMenu, FiX } from 'react-icons/fi';
 
 const Navbar = () => {
-  const [activeSection, setActiveSection] = useState('home');
+  const location = useLocation();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [hoveredItem, setHoveredItem] = useState(null);
+  const [activeSection, setActiveSection] = useState('home');
 
   const navLinks = [
-    { name: 'Home', href: '#home', icon: FiHome },
-    { name: 'About', href: '#about', icon: FiUser },
-    { name: 'Skills', href: '#skills', icon: FiCpu },
-    { name: 'Projects', href: '#projects', icon: FiFolder },
-    { name: 'Certificates', href: '#certificates', icon: FiAward },
-    { name: 'LeetCode', href: '#leetcode', icon: FiCode },
-    { name: 'Contact', href: '#contact', icon: FiMail },
+    { name: 'Home', href: '/', sectionId: 'home', icon: FiHome },
+    { name: 'About', href: '/about', sectionId: 'about', icon: FiUser },
+    { name: 'Skills', href: '/skills', sectionId: 'skills', icon: FiCpu },
+    { name: 'Projects', href: '/projects', sectionId: 'projects', icon: FiFolder },
+    { name: 'Certificates', href: '/certificates', sectionId: 'certificates', icon: FiAward },
+    { name: 'LeetCode', href: '/leetcode', sectionId: 'leetcode', icon: FiCode },
+    { name: 'Contact', href: '/contact', sectionId: 'contact', icon: FiMail },
   ];
 
+  // Determine active link based on current route or scroll position (for home page)
+  const isHomePage = location.pathname === '/';
+
   useEffect(() => {
+    if (!isHomePage) {
+      // On sub-pages, set active based on route
+      const match = navLinks.find(l => l.href === location.pathname);
+      if (match) setActiveSection(match.sectionId);
+      return;
+    }
+
+    // On home page, track scroll position
     let ticking = false;
     const handleScroll = () => {
       if (ticking) return;
       ticking = true;
       requestAnimationFrame(() => {
-        const sections = navLinks.map(l => l.href.slice(1));
-        for (let i = sections.length - 1; i >= 0; i--) {
-          const el = document.getElementById(sections[i]);
+        const sectionIds = navLinks.map(l => l.sectionId);
+        for (let i = sectionIds.length - 1; i >= 0; i--) {
+          const el = document.getElementById(sectionIds[i]);
           if (el && el.getBoundingClientRect().top <= 150) {
-            setActiveSection(sections[i]);
+            setActiveSection(sectionIds[i]);
             break;
           }
         }
@@ -37,7 +50,27 @@ const Navbar = () => {
 
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+  }, [isHomePage, location.pathname]);
+
+  // Handle navigation — on home page, scroll to section; on other pages, navigate via router
+  const handleNavClick = (link) => {
+    if (isHomePage) {
+      // Scroll to section on home page
+      const el = document.getElementById(link.sectionId);
+      if (el) {
+        el.scrollIntoView({ behavior: 'smooth' });
+      }
+    }
+    setMobileOpen(false);
+  };
+
+  // Generate the correct link target
+  const getLinkTarget = (link) => {
+    if (isHomePage) {
+      return `/#${link.sectionId}`;
+    }
+    return link.href;
+  };
 
   return (
     <>
@@ -54,12 +87,12 @@ const Navbar = () => {
         }}
       >
         {/* Logo */}
-        <a href="#home" className="group mb-8">
+        <Link to="/" className="group mb-8">
           <div className="relative w-10 h-10 flex items-center justify-center">
             <div className="absolute inset-0 bg-gradient-to-br from-accent to-neon-cyan rounded-xl opacity-80 group-hover:opacity-100 transition-all duration-300 group-hover:shadow-[0_0_20px_rgba(139,92,246,0.3)]" />
             <span className="relative text-white font-display font-bold text-lg">M</span>
           </div>
-        </a>
+        </Link>
 
         {/* Divider */}
         <div className="w-6 h-px bg-white/10 mb-4" />
@@ -68,7 +101,7 @@ const Navbar = () => {
         <div className="flex-1 flex flex-col items-center gap-1">
           {navLinks.map((link) => {
             const Icon = link.icon;
-            const isActive = activeSection === link.href.slice(1);
+            const isActive = activeSection === link.sectionId;
 
             return (
               <div
@@ -77,8 +110,9 @@ const Navbar = () => {
                 onMouseEnter={() => setHoveredItem(link.name)}
                 onMouseLeave={() => setHoveredItem(null)}
               >
-                <a
-                  href={link.href}
+                <Link
+                  to={link.href}
+                  onClick={() => handleNavClick(link)}
                   className={`relative flex items-center justify-center w-11 h-11 rounded-xl transition-all duration-300 ${
                     isActive
                       ? 'text-white'
@@ -104,7 +138,7 @@ const Navbar = () => {
                   )}
 
                   <Icon size={19} className="relative z-10" />
-                </a>
+                </Link>
 
                 {/* Tooltip */}
                 <AnimatePresence>
@@ -143,11 +177,11 @@ const Navbar = () => {
         <div className="w-6 h-px bg-white/10 mb-4" />
 
         {/* Bottom profile avatar */}
-        <a href="#contact" className="group">
+        <Link to="/contact" className="group">
           <div className="w-9 h-9 rounded-full bg-gradient-to-br from-accent/30 to-neon-cyan/30 flex items-center justify-center border border-white/10 group-hover:border-accent/40 transition-all duration-300 overflow-hidden">
             <span className="text-xs font-display font-bold text-white/70 group-hover:text-white transition-colors">MP</span>
           </div>
-        </a>
+        </Link>
       </motion.nav>
 
       {/* ═══ Mobile Top Bar ═══ */}
@@ -163,12 +197,12 @@ const Navbar = () => {
             borderBottom: '1px solid rgba(255,255,255,0.04)',
           }}
         >
-          <a href="#home" className="flex items-center">
+          <Link to="/" className="flex items-center">
             <div className="relative w-9 h-9 flex items-center justify-center">
               <div className="absolute inset-0 bg-gradient-to-br from-accent to-neon-cyan rounded-lg opacity-80" />
               <span className="relative text-white font-display font-bold text-sm">M</span>
             </div>
-          </a>
+          </Link>
 
           <button
             onClick={() => setMobileOpen(!mobileOpen)}
@@ -195,25 +229,28 @@ const Navbar = () => {
               <div className="flex flex-col p-3 gap-0.5">
                 {navLinks.map((link, i) => {
                   const Icon = link.icon;
-                  const isActive = activeSection === link.href.slice(1);
+                  const isActive = activeSection === link.sectionId;
 
                   return (
-                    <motion.a
+                    <motion.div
                       key={link.name}
-                      href={link.href}
-                      onClick={() => setMobileOpen(false)}
                       initial={{ opacity: 0, x: -15 }}
                       animate={{ opacity: 1, x: 0 }}
                       transition={{ delay: i * 0.04 }}
-                      className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all ${
-                        isActive
-                          ? 'bg-white/10 text-white'
-                          : 'text-gray-400 hover:bg-white/5 hover:text-white'
-                      }`}
                     >
-                      <Icon size={18} />
-                      {link.name}
-                    </motion.a>
+                      <Link
+                        to={link.href}
+                        onClick={() => handleNavClick(link)}
+                        className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all ${
+                          isActive
+                            ? 'bg-white/10 text-white'
+                            : 'text-gray-400 hover:bg-white/5 hover:text-white'
+                        }`}
+                      >
+                        <Icon size={18} />
+                        {link.name}
+                      </Link>
+                    </motion.div>
                   );
                 })}
               </div>

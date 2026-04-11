@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
+import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { BsGithub, BsLinkedin, BsTwitterX, BsInstagram } from 'react-icons/bs';
 import { FiArrowRight } from 'react-icons/fi';
@@ -125,14 +126,14 @@ const Hero = () => {
           variants={itemVariants}
           className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-16"
         >
-          <a
-            href="#projects"
+          <Link
+            to="/projects"
             className="group relative px-8 py-4 bg-gradient-to-r from-accent to-neon-cyan text-white font-semibold rounded-full magnetic-btn flex items-center gap-3 text-lg overflow-hidden"
           >
             <span className="absolute inset-0 bg-gradient-to-r from-neon-cyan to-accent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
             <span className="relative">View Projects</span>
             <FiArrowRight className="relative group-hover:translate-x-1 transition-transform" />
-          </a>
+          </Link>
 
           <a
             href="https://resume-mp.vercel.app/"

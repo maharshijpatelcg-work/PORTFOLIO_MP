@@ -270,14 +270,14 @@ const LeetCode = () => {
 function AnimatedCounter({ value }) {
   const [count, setCount] = useState(0);
   const countRef = useRef(null);
-  const hasAnimated = useRef(false);
 
   useEffect(() => {
+    // If value is 0 (e.g., initial load state), wait until data becomes available
+    if (value === 0) return;
+
     const observer = new IntersectionObserver(
       ([entry]) => {
-        if (entry.isIntersecting && !hasAnimated.current) {
-          hasAnimated.current = true;
-          let start = 0;
+        if (entry.isIntersecting) {
           const end = value;
           const duration = 2000;
           const startTime = performance.now();
@@ -294,6 +294,9 @@ function AnimatedCounter({ value }) {
           };
 
           requestAnimationFrame(animate);
+
+          // Stop observing so the animation only happens once per valid data fetch
+          if (countRef.current) observer.unobserve(countRef.current);
         }
       },
       { threshold: 0.5 }

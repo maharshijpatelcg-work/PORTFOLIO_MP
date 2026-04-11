@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { FiArrowUp, FiHeart, FiGithub, FiLinkedin, FiTwitter, FiInstagram } from 'react-icons/fi';
 
@@ -7,7 +8,14 @@ const Footer = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  const navLinks = ['Home', 'About', 'Skills', 'Projects', 'Certificates', 'Contact'];
+  const navLinks = [
+    { name: 'Home', path: '/' },
+    { name: 'About', path: '/about' },
+    { name: 'Skills', path: '/skills' },
+    { name: 'Projects', path: '/projects' },
+    { name: 'Certificates', path: '/certificates' },
+    { name: 'Contact', path: '/contact' },
+  ];
 
   const contentVariants = {
     hidden: { opacity: 0 },
@@ -56,13 +64,13 @@ const Footer = () => {
             <h4 className="text-sm font-mono text-gray-400 uppercase tracking-widest mb-4">Quick Links</h4>
             <div className="grid grid-cols-2 gap-2">
               {navLinks.map((link) => (
-                <a
-                  key={link}
-                  href={`#${link.toLowerCase()}`}
+                <Link
+                  key={link.name}
+                  to={link.path}
                   className="text-gray-500 hover:text-accent-light text-sm transition-colors duration-300"
                 >
-                  {link}
-                </a>
+                  {link.name}
+                </Link>
               ))}
             </div>
           </motion.div>

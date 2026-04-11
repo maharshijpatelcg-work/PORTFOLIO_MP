@@ -1,26 +1,34 @@
 import React, { lazy, Suspense } from 'react';
+import { Routes, Route, useLocation } from 'react-router-dom';
 import Navbar from './components/Navbar';
-import Hero from './components/Hero';
 import CustomCursor from './components/CustomCursor';
-import SectionDivider from './components/SectionDivider';
 import './App.css';
 
-// Lazy load below-the-fold components for faster initial render
-const About = lazy(() => import('./components/About'));
-const Skills = lazy(() => import('./components/Skills'));
-const Projects = lazy(() => import('./components/Projects'));
-const Certificates = lazy(() => import('./components/Certificates'));
-const LeetCode = lazy(() => import('./components/LeetCode'));
-const Contact = lazy(() => import('./components/Contact'));
+// Lazy load page components
+const Home = lazy(() => import('./pages/Home'));
+const AboutPage = lazy(() => import('./pages/AboutPage'));
+const SkillsPage = lazy(() => import('./pages/SkillsPage'));
+const ProjectsPage = lazy(() => import('./pages/ProjectsPage'));
+const CertificatesPage = lazy(() => import('./pages/CertificatesPage'));
+const LeetCodePage = lazy(() => import('./pages/LeetCodePage'));
+const ContactPage = lazy(() => import('./pages/ContactPage'));
 const Footer = lazy(() => import('./components/Footer'));
-// Background3D removed — premium black theme doesn't need the solar system
 
 // Minimal fallback while lazy chunks load
-const SectionFallback = () => (
-  <div className="flex items-center justify-center py-24">
-    <div className="w-6 h-6 border-2 border-accent/30 border-t-accent rounded-full animate-spin" />
+const PageFallback = () => (
+  <div className="flex items-center justify-center min-h-screen">
+    <div className="w-8 h-8 border-2 border-accent/30 border-t-accent rounded-full animate-spin" />
   </div>
 );
+
+// ScrollToTop component — scrolls to page top on route change
+function ScrollToTop() {
+  const { pathname } = useLocation();
+  React.useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [pathname]);
+  return null;
+}
 
 function App() {
   return (
@@ -30,38 +38,25 @@ function App() {
       {/* Premium black geometric background */}
       <div
         className="fixed inset-0 -z-10 bg-cover bg-center bg-no-repeat"
-        style={{ backgroundImage: "url('/premium-black-bg.png')" }}
+        style={{ backgroundImage: "url('https://raw.githubusercontent.com/maharshijpatelcg-work/PORTFOLIO_MP/main/public/premium-black-bg.png')" }}
       />
       {/* Subtle dark overlay to blend content */}
       <div className="fixed inset-0 -z-10 bg-black/40" />
 
       <Navbar />
+      <ScrollToTop />
 
       <main className="relative z-10">
-        <Hero />
-        <SectionDivider />
-        <Suspense fallback={<SectionFallback />}>
-          <About />
-        </Suspense>
-        <SectionDivider />
-        <Suspense fallback={<SectionFallback />}>
-          <Skills />
-        </Suspense>
-        <SectionDivider />
-        <Suspense fallback={<SectionFallback />}>
-          <Projects />
-        </Suspense>
-        <SectionDivider />
-        <Suspense fallback={<SectionFallback />}>
-          <Certificates />
-        </Suspense>
-        <SectionDivider />
-        <Suspense fallback={<SectionFallback />}>
-          <LeetCode />
-        </Suspense>
-        <SectionDivider />
-        <Suspense fallback={<SectionFallback />}>
-          <Contact />
+        <Suspense fallback={<PageFallback />}>
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/about" element={<AboutPage />} />
+            <Route path="/skills" element={<SkillsPage />} />
+            <Route path="/projects" element={<ProjectsPage />} />
+            <Route path="/certificates" element={<CertificatesPage />} />
+            <Route path="/leetcode" element={<LeetCodePage />} />
+            <Route path="/contact" element={<ContactPage />} />
+          </Routes>
         </Suspense>
       </main>
 
@@ -73,4 +68,3 @@ function App() {
 }
 
 export default App;
-
