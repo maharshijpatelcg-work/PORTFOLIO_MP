@@ -1,15 +1,20 @@
 import React, { useMemo } from 'react';
 
+const seededValue = (seed) => {
+  const raw = Math.sin(seed * 999.91) * 10000;
+  return raw - Math.floor(raw);
+};
+
 const ParticleField = () => {
   // Reduced from 50 to 15 particles for smooth performance
   const particles = useMemo(() => {
     return Array.from({ length: 15 }, (_, i) => ({
       id: i,
-      left: Math.random() * 100,
-      delay: Math.random() * 20,
-      duration: 20 + Math.random() * 30,
-      size: 1 + Math.random() * 2,
-      opacity: 0.08 + Math.random() * 0.15,
+      left: seededValue((i + 1) * 1.37) * 100,
+      delay: seededValue((i + 1) * 2.11) * 20,
+      duration: 20 + seededValue((i + 1) * 3.73) * 30,
+      size: 1 + seededValue((i + 1) * 4.19) * 2,
+      opacity: 0.08 + seededValue((i + 1) * 5.03) * 0.15,
     }));
   }, []);
 

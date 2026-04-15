@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { FiCode, FiCpu, FiMonitor, FiZap, FiCalendar, FiMapPin } from 'react-icons/fi';
+import profileImage from './Maharshi.png';
 
 const About = () => {
   const [problemsSolved, setProblemsSolved] = useState(null);
@@ -60,7 +61,7 @@ const About = () => {
             {/* Image container */}
             <div className="relative w-56 h-56 sm:w-72 sm:h-72 md:w-80 md:h-80 rounded-3xl overflow-hidden glass-card">
               <img
-                src="https://raw.githubusercontent.com/maharshijpatelcg-work/PORTFOLIO_MP/main/src/components/Maharshi.png"
+                src={profileImage}
                 alt="Maharshi Patel"
                 className="object-cover w-full h-full transform transition-transform duration-700 group-hover:scale-110"
               />

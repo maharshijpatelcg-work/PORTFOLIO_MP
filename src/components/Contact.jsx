@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react';
 import { motion } from 'framer-motion';
-import { FiMail, FiGithub, FiLinkedin, FiTwitter, FiInstagram, FiSend, FiMapPin, FiPhone, FiCheck, FiAlertCircle } from 'react-icons/fi';
+import { FiMail, FiGithub, FiLinkedin, FiTwitter, FiInstagram, FiSend, FiMapPin, FiCheck, FiAlertCircle } from 'react-icons/fi';
 import emailjs from '@emailjs/browser';
 
 const Contact = () => {
@@ -54,10 +54,10 @@ const Contact = () => {
   };
 
   const socialLinks = [
-    { Icon: FiGithub, href: 'https://github.com/maharshijpatelcg-work', label: 'GitHub', color: '#fff' },
-    { Icon: FiLinkedin, href: 'https://www.linkedin.com/in/maharshi-patel-1b08b0395/', label: 'LinkedIn', color: '#0077B5' },
-    { Icon: FiTwitter, href: 'https://x.com/Maharshi_245707', label: 'Twitter', color: '#1DA1F2' },
-    { Icon: FiInstagram, href: 'https://www.instagram.com/mr._.maharshi_24/', label: 'Instagram', color: '#E1306C' },
+    { Icon: FiGithub, href: 'https://github.com/maharshijpatelcg-work', label: 'GitHub' },
+    { Icon: FiLinkedin, href: 'https://www.linkedin.com/in/maharshi-patel-1b08b0395/', label: 'LinkedIn' },
+    { Icon: FiTwitter, href: 'https://x.com/Maharshi_245707', label: 'Twitter' },
+    { Icon: FiInstagram, href: 'https://www.instagram.com/mr._.maharshi_24/', label: 'Instagram' },
   ];
 
   const contentVariants = {
@@ -156,7 +156,7 @@ const Contact = () => {
           <motion.div variants={itemVariants}>
             <p className="text-xs text-gray-500 font-mono uppercase tracking-wider mb-3">Find me on</p>
             <div className="flex gap-3">
-              {socialLinks.map(({ Icon, href, label, color }) => (
+              {socialLinks.map(({ Icon, href, label }) => (
                 <a
                   key={label}
                   href={href}

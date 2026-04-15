@@ -21,53 +21,50 @@ const Footer = () => {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
-      transition: { staggerChildren: 0.1, delayChildren: 0.1 }
-    }
+      transition: { staggerChildren: 0.1, delayChildren: 0.1 },
+    },
   };
 
   const itemVariants = {
     hidden: { opacity: 0, y: 15 },
-    visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: [0.25, 0.46, 0.45, 0.94] } }
+    visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: [0.25, 0.46, 0.45, 0.94] } },
   };
 
   return (
     <footer className="relative border-t border-white/5">
-      {/* Gradient top border */}
-      <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-accent/40 to-transparent" />
+      <div className="absolute left-0 right-0 top-0 h-px bg-gradient-to-r from-transparent via-accent/40 to-transparent" />
 
       <motion.div
         variants={contentVariants}
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true }}
-        className="max-w-7xl mx-auto px-4 py-16"
+        className="mx-auto max-w-7xl px-4 py-16"
       >
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-12 mb-12">
-          {/* Brand */}
+        <div className="mb-12 grid grid-cols-1 gap-12 md:grid-cols-3">
           <motion.div variants={itemVariants}>
-            <div className="flex items-center gap-3 mb-4">
-              <div className="relative w-10 h-10 flex items-center justify-center">
-                <div className="absolute inset-0 bg-gradient-to-br from-accent to-neon-cyan rounded-lg opacity-80" />
-                <span className="relative text-white font-display font-bold text-lg">M</span>
+            <div className="mb-4 flex items-center gap-3">
+              <div className="relative flex h-10 w-10 items-center justify-center">
+                <div className="absolute inset-0 rounded-lg bg-gradient-to-br from-accent to-neon-cyan opacity-80" />
+                <span className="relative font-display text-lg font-bold text-white">M</span>
               </div>
-              <span className="font-display font-semibold text-lg text-white">
+              <span className="font-display text-lg font-semibold text-white">
                 Maharshi<span className="text-accent-light">.</span>
               </span>
             </div>
-            <p className="text-gray-500 text-sm leading-relaxed max-w-xs">
+            <p className="max-w-xs text-sm leading-relaxed text-gray-500">
               Crafting exceptional digital experiences through clean code and creative design.
             </p>
           </motion.div>
 
-          {/* Quick Links */}
           <motion.div variants={itemVariants}>
-            <h4 className="text-sm font-mono text-gray-400 uppercase tracking-widest mb-4">Quick Links</h4>
+            <h4 className="mb-4 text-sm font-mono uppercase tracking-widest text-gray-400">Quick Links</h4>
             <div className="grid grid-cols-2 gap-2">
               {navLinks.map((link) => (
                 <Link
                   key={link.name}
                   to={link.path}
-                  className="text-gray-500 hover:text-accent-light text-sm transition-colors duration-300"
+                  className="text-sm text-gray-500 transition-colors duration-300 hover:text-accent-light"
                 >
                   {link.name}
                 </Link>
@@ -75,22 +72,21 @@ const Footer = () => {
             </div>
           </motion.div>
 
-          {/* Social */}
           <motion.div variants={itemVariants}>
-            <h4 className="text-sm font-mono text-gray-400 uppercase tracking-widest mb-4">Connect</h4>
+            <h4 className="mb-4 text-sm font-mono uppercase tracking-widest text-gray-400">Connect</h4>
             <div className="flex gap-3">
               {[
                 { Icon: FiGithub, href: 'https://github.com/maharshijpatelcg-work' },
                 { Icon: FiLinkedin, href: 'https://www.linkedin.com/in/maharshi-patel-1b08b0395/' },
                 { Icon: FiTwitter, href: 'https://x.com/Maharshi_245707' },
                 { Icon: FiInstagram, href: 'https://www.instagram.com/mr._.maharshi_24/' },
-              ].map(({ Icon, href }, i) => (
+              ].map(({ Icon, href }, index) => (
                 <a
-                  key={i}
+                  key={`${href}-${index}`}
                   href={href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="p-2.5 glass rounded-lg text-gray-500 hover:text-white hover:bg-white/10 transition-all duration-300"
+                  className="rounded-lg glass p-2.5 text-gray-500 transition-all duration-300 hover:bg-white/10 hover:text-white"
                 >
                   <Icon size={18} />
                 </a>
@@ -99,29 +95,24 @@ const Footer = () => {
           </motion.div>
         </div>
 
-        {/* Divider */}
-        <motion.div variants={itemVariants} className="h-px bg-white/5 mb-8" />
+        <motion.div variants={itemVariants} className="mb-8 h-px bg-white/5" />
 
-        {/* Bottom bar */}
-        <motion.div variants={itemVariants} className="flex flex-col md:flex-row justify-between items-center gap-4">
-          <p className="text-sm text-gray-600 flex items-center gap-1">
+        <motion.div variants={itemVariants} className="flex flex-col items-center justify-between gap-4 md:flex-row">
+          <p className="flex items-center gap-1 text-sm text-gray-600">
             © {new Date().getFullYear()} Maharshi Patel. Built with
-            <FiHeart className="text-red-400 text-xs" />
+            <FiHeart className="text-xs text-red-400" />
             and React
           </p>
 
-          <p className="text-xs text-gray-700 font-mono">
-            Designed & Developed by Maharshi Patel
-          </p>
+          <p className="font-mono text-xs text-gray-700">Designed &amp; Developed by Maharshi Patel</p>
         </motion.div>
       </motion.div>
 
-      {/* Scroll to top */}
       <motion.button
         onClick={scrollToTop}
         whileHover={{ y: -3 }}
         whileTap={{ scale: 0.95 }}
-        className="fixed right-6 bottom-6 p-3 bg-gradient-to-r from-accent to-neon-cyan text-white rounded-full shadow-glow-md z-40 magnetic-btn"
+        className="fixed bottom-6 right-6 z-40 rounded-full bg-gradient-to-r from-accent to-neon-cyan p-3 text-white shadow-glow-md magnetic-btn"
       >
         <FiArrowUp size={20} />
       </motion.button>

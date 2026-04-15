@@ -1,22 +1,9 @@
-import React, { useEffect, useRef, useCallback } from 'react';
+import React, { useEffect, useRef } from 'react';
 
 const CustomCursor = () => {
   const dotRef = useRef(null);
   const trailRef = useRef(null);
   const isHoveringRef = useRef(false);
-
-  // Use a ref-based approach instead of state to avoid re-renders
-  const updateScale = useCallback(() => {
-    const dot = dotRef.current;
-    const trail = trailRef.current;
-    if (!dot || !trail) return;
-
-    const dotScale = isHoveringRef.current ? 1.5 : 1;
-    const trailScale = isHoveringRef.current ? 1.8 : 1;
-
-    dot.style.transform = dot.style.transform.replace(/scale\([^)]+\)/, `scale(${dotScale})`);
-    trail.style.transform = trail.style.transform.replace(/scale\([^)]+\)/, `scale(${trailScale})`);
-  }, []);
 
   useEffect(() => {
     // Disable on mobile/touch devices

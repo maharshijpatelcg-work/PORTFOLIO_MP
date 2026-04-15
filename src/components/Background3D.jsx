@@ -11,12 +11,14 @@ const PLANETS = [
   { name: 'Saturn', color: '#ead6b8', size: 0.85, orbitRadius: 21, speed: 0.1, selfRotateSpeed: 1.5, hasRing: true },
 ];
 
+const getStableOffset = (seed) =>
+  Array.from(seed).reduce((sum, char, index) => sum + char.charCodeAt(0) * (index + 1), 0) % (Math.PI * 200);
+
 const Planet = ({ planet }) => {
   const orbitGroupRef = useRef();
   const planetRef = useRef();
 
-  // Randomize start position
-  const randomOffset = useMemo(() => Math.random() * Math.PI * 2, []);
+  const randomOffset = useMemo(() => getStableOffset(planet.name) / 100, [planet.name]);
 
   useFrame((state, delta) => {
     if (orbitGroupRef.current) {
@@ -61,13 +63,13 @@ const Planet = ({ planet }) => {
 const AsteroidBelt = () => {
   const meshRef = useRef();
   const instancedRef = useRef();
+  const dummyRef = useRef(new THREE.Object3D());
   const count = 150; // Reduced from 600 to 150, with instancing
-
-  const dummy = useMemo(() => new THREE.Object3D(), []);
 
   // Build instance matrices once
   useEffect(() => {
     if (!instancedRef.current) return;
+    const dummy = dummyRef.current;
 
     for (let i = 0; i < count; i++) {
       const radius = 10 + Math.random() * 3.5;
@@ -141,6 +143,15 @@ const SolarSystem = () => {
 
 const Background3D = () => {
   const [isVisible, setIsVisible] = useState(true);
+  const [shouldRender] = useState(() => {
+    if (typeof window === 'undefined') {
+      return true;
+    }
+
+    const isMobile = window.innerWidth < 768;
+    const logicalCores = navigator.hardwareConcurrency ?? 4;
+    return !(isMobile || logicalCores < 4);
+  });
 
   // Pause rendering when tab is not visible
   useEffect(() => {
@@ -149,17 +160,6 @@ const Background3D = () => {
     };
     document.addEventListener('visibilitychange', handleVisibility);
     return () => document.removeEventListener('visibilitychange', handleVisibility);
-  }, []);
-
-  // Don't render on mobile or low-performance devices
-  const [shouldRender, setShouldRender] = useState(true);
-  useEffect(() => {
-    // Skip 3D on mobile (screen width < 768) or devices with < 4 logical cores
-    const isMobile = window.innerWidth < 768;
-    const isLowEnd = navigator.hardwareConcurrency && navigator.hardwareConcurrency < 4;
-    if (isMobile || isLowEnd) {
-      setShouldRender(false);
-    }
   }, []);
 
   if (!shouldRender) return null;

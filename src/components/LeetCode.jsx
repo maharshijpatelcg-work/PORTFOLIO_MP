@@ -54,7 +54,7 @@ const LeetCode = () => {
         } else {
           throw new Error("Invalid data");
         }
-      } catch (error) {
+      } catch {
         // Fallback to approximate stats if API is temporarily down
         setStats({
           totalSolved: 72,

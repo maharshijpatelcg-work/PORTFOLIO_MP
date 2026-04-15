@@ -4,31 +4,33 @@ import { motion } from 'framer-motion';
 import { BsGithub, BsLinkedin, BsTwitterX, BsInstagram } from 'react-icons/bs';
 import { FiArrowRight } from 'react-icons/fi';
 
+const ROLES = [
+  'Full-Stack Developer',
+  'React Specialist',
+  'Problem Solver',
+  'Creative Technologist',
+];
+
 const Hero = () => {
   const [text, setText] = useState('');
   const [roleIndex, setRoleIndex] = useState(0);
   const [isDeleting, setIsDeleting] = useState(false);
   const containerRef = useRef(null);
 
-  const roles = [
-    "Full-Stack Developer",
-    "React Specialist",
-    "Problem Solver",
-    "Creative Technologist",
-  ];
-
   // Advanced typewriter with delete effect
   useEffect(() => {
-    const currentRole = roles[roleIndex];
+    const currentRole = ROLES[roleIndex];
     let timer;
 
     if (!isDeleting && text === currentRole) {
-      timer = setTimeout(() => setIsDeleting(true), 2000);
+      timer = window.setTimeout(() => setIsDeleting(true), 2000);
     } else if (isDeleting && text === '') {
-      setIsDeleting(false);
-      setRoleIndex((prev) => (prev + 1) % roles.length);
+      timer = window.setTimeout(() => {
+        setIsDeleting(false);
+        setRoleIndex((prev) => (prev + 1) % ROLES.length);
+      }, 140);
     } else {
-      timer = setTimeout(
+      timer = window.setTimeout(
         () => {
           setText(
             isDeleting
@@ -40,7 +42,7 @@ const Hero = () => {
       );
     }
 
-    return () => clearTimeout(timer);
+    return () => window.clearTimeout(timer);
   }, [text, isDeleting, roleIndex]);
 
   const containerVariants = {

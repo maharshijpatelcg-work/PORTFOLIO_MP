@@ -38,7 +38,7 @@ function App() {
       {/* Premium black geometric background */}
       <div
         className="fixed inset-0 -z-10 bg-cover bg-center bg-no-repeat"
-        style={{ backgroundImage: "url('https://raw.githubusercontent.com/maharshijpatelcg-work/PORTFOLIO_MP/main/public/premium-black-bg.png')" }}
+        style={{ backgroundImage: "url('/premium-black-bg.png')" }}
       />
       {/* Subtle dark overlay to blend content */}
       <div className="fixed inset-0 -z-10 bg-black/40" />
