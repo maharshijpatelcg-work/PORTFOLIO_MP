@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
 import { FaHtml5, FaCss3Alt, FaJs, FaReact, FaNodeJs, FaGitAlt } from 'react-icons/fa';
 import { SiMongodb, SiC, SiTailwindcss, SiPostman } from 'react-icons/si';
@@ -60,6 +60,135 @@ const sectionBeams = [
   { id: 'beam-three', top: '74%', left: '20%', width: '12rem', rotate: 6, duration: 8, delay: 0.8 },
 ];
 
+/* ── 3D Skill Cube Component ── */
+const SkillCube = ({ skill, index, shouldReduceMotion }) => {
+  const [isHovered, setIsHovered] = useState(false);
+  const cubeRef = useRef(null);
+  const rgb = hexToRgb(skill.color);
+  const glowStrong = `rgba(${rgb}, 0.5)`;
+  const glowSoft = `rgba(${rgb}, 0.16)`;
+
+  // Each cube shows the skill on all 6 faces with variations
+  const faces = [
+    { transform: 'rotateY(0deg) translateZ(70px)', label: 'front' },
+    { transform: 'rotateY(180deg) translateZ(70px)', label: 'back' },
+    { transform: 'rotateY(90deg) translateZ(70px)', label: 'right' },
+    { transform: 'rotateY(-90deg) translateZ(70px)', label: 'left' },
+    { transform: 'rotateX(90deg) translateZ(70px)', label: 'top' },
+    { transform: 'rotateX(-90deg) translateZ(70px)', label: 'bottom' },
+  ];
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 40, scale: 0.8 }}
+      animate={{ opacity: 1, y: 0, scale: 1 }}
+      exit={{ opacity: 0, y: -20, scale: 0.8 }}
+      transition={{
+        duration: shouldReduceMotion ? 0.01 : 0.6,
+        delay: shouldReduceMotion ? 0 : index * 0.08,
+        ease: [0.22, 1, 0.36, 1],
+      }}
+      className="skill-cube-wrapper"
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+      style={{
+        '--skill-color': skill.color,
+        '--skill-glow': glowStrong,
+        '--skill-glow-soft': glowSoft,
+        '--skill-rgb': rgb,
+        '--cube-delay': `${index * -2.5}s`,
+      }}
+    >
+      {/* Cube Container */}
+      <div className={`skill-cube-scene ${isHovered ? 'is-hovered' : ''}`}>
+        <div
+          ref={cubeRef}
+          className="skill-cube"
+          style={{
+            animationDelay: `${index * -2.5}s`,
+          }}
+        >
+          {/* Front Face — Main display */}
+          <div className="skill-cube-face skill-cube-front" style={{ transform: faces[0].transform }}>
+            <div className="cube-face-content">
+              <span className="cube-icon" style={{ color: skill.color }}>
+                {skill.icon}
+              </span>
+              <span className="cube-name">{skill.name}</span>
+            </div>
+            <div className="cube-face-glow" style={{ background: `radial-gradient(circle, rgba(${rgb}, 0.3), transparent 70%)` }} />
+          </div>
+
+          {/* Back Face */}
+          <div className="skill-cube-face skill-cube-back" style={{ transform: faces[1].transform }}>
+            <div className="cube-face-content">
+              <span className="cube-icon cube-icon-sm" style={{ color: skill.color }}>
+                {skill.icon}
+              </span>
+              <span className="cube-tag">{skill.tag}</span>
+            </div>
+            <div className="cube-face-glow" style={{ background: `radial-gradient(circle, rgba(${rgb}, 0.25), transparent 70%)` }} />
+          </div>
+
+          {/* Right Face */}
+          <div className="skill-cube-face skill-cube-right" style={{ transform: faces[2].transform }}>
+            <div className="cube-face-content">
+              <span className="cube-icon cube-icon-sm" style={{ color: skill.color }}>
+                {skill.icon}
+              </span>
+            </div>
+            <div className="cube-face-glow" style={{ background: `radial-gradient(circle, rgba(${rgb}, 0.2), transparent 70%)` }} />
+          </div>
+
+          {/* Left Face */}
+          <div className="skill-cube-face skill-cube-left" style={{ transform: faces[3].transform }}>
+            <div className="cube-face-content">
+              <span className="cube-icon cube-icon-sm" style={{ color: skill.color }}>
+                {skill.icon}
+              </span>
+            </div>
+            <div className="cube-face-glow" style={{ background: `radial-gradient(circle, rgba(${rgb}, 0.2), transparent 70%)` }} />
+          </div>
+
+          {/* Top Face */}
+          <div className="skill-cube-face skill-cube-top" style={{ transform: faces[4].transform }}>
+            <div className="cube-face-content">
+              <span className="cube-icon cube-icon-sm" style={{ color: skill.color }}>
+                {skill.icon}
+              </span>
+            </div>
+            <div className="cube-face-glow" style={{ background: `radial-gradient(circle, rgba(${rgb}, 0.15), transparent 70%)` }} />
+          </div>
+
+          {/* Bottom Face */}
+          <div className="skill-cube-face skill-cube-bottom" style={{ transform: faces[5].transform }}>
+            <div className="cube-face-content">
+              <span className="cube-icon cube-icon-sm" style={{ color: skill.color }}>
+                {skill.icon}
+              </span>
+            </div>
+            <div className="cube-face-glow" style={{ background: `radial-gradient(circle, rgba(${rgb}, 0.15), transparent 70%)` }} />
+          </div>
+        </div>
+      </div>
+
+      {/* Skill Info Below Cube */}
+      <div className="skill-cube-info">
+        <h3 className="skill-cube-title" style={{ color: skill.color }}>{skill.name}</h3>
+        <p className="skill-cube-category">{skill.tag}</p>
+      </div>
+
+      {/* Reflection / shadow below cube */}
+      <div
+        className="skill-cube-shadow"
+        style={{
+          background: `radial-gradient(ellipse, rgba(${rgb}, 0.25) 0%, transparent 70%)`,
+        }}
+      />
+    </motion.div>
+  );
+};
+
 const Skills = () => {
   const [activeCategory, setActiveCategory] = useState('all');
   const shouldReduceMotion = useReducedMotion();
@@ -70,12 +199,6 @@ const Skills = () => {
     { id: 'backend', label: 'Backend' },
     { id: 'tools', label: 'Tools' },
   ];
-
-  const categoryLabels = {
-    frontend: 'Frontend',
-    backend: 'Backend',
-    tools: 'Toolchain',
-  };
 
   const skills = [
     { name: 'HTML5', icon: <FaHtml5 />, color: '#E34F26', level: 90, category: 'frontend', tag: 'Semantic Markup' },
@@ -186,7 +309,7 @@ const Skills = () => {
             transition={{ delay: 0.2 }}
             className="mx-auto max-w-2xl text-sm text-white/62 sm:text-base"
           >
-            A darker, sharper stack display with live energy, motion, and pressure built into every card.
+            Interactive 3D cubes showcasing each technology — hover to freeze, explore every dimension.
           </motion.p>
         </div>
 
@@ -220,109 +343,17 @@ const Skills = () => {
           })}
         </motion.div>
 
-        <motion.div layout className="grid gap-5 md:gap-6">
+        {/* 3D Cube Grid */}
+        <motion.div layout className="skill-cubes-grid">
           <AnimatePresence mode="popLayout">
-            {filteredSkills.map((skill, index) => {
-              const rgb = hexToRgb(skill.color);
-              const glowStrong = `rgba(${rgb}, 0.5)`;
-              const glowSoft = `rgba(${rgb}, 0.16)`;
-              const halo = `rgba(${rgb}, 0.28)`;
-
-              return (
-                <motion.div
-                  key={skill.name}
-                  layout
-                  initial={{ opacity: 0, y: 28, scale: 0.94 }}
-                  animate={{ opacity: 1, y: 0, scale: 1 }}
-                  exit={{ opacity: 0, y: -18, scale: 0.94 }}
-                  transition={{
-                    duration: shouldReduceMotion ? 0.01 : 0.45,
-                    delay: shouldReduceMotion ? 0 : index * 0.05,
-                  }}
-                  whileHover={shouldReduceMotion ? undefined : { y: -10, scale: 1.015 }}
-                  className="skill-threat-shell group relative overflow-hidden rounded-[1.75rem] p-[1px]"
-                  style={{
-                    '--skill-color': skill.color,
-                    '--skill-glow': glowStrong,
-                    '--skill-glow-soft': glowSoft,
-                    '--skill-halo': halo,
-                    '--skill-delay': `${index * 0.35}s`,
-                  }}
-                >
-                  <div className="skill-threat-card relative flex h-full min-h-[220px] flex-col overflow-hidden rounded-[calc(1.75rem-1px)] p-6 md:p-7">
-                    <span className="skill-noise" aria-hidden="true" />
-                    <span className="skill-grid-overlay" aria-hidden="true" />
-                    <span className="skill-corner-glow" aria-hidden="true" />
-
-                    <div className="relative z-10 flex h-full flex-col">
-                      <div className="mb-6 flex items-center justify-between gap-3">
-                        <span className="skill-category-pill">{skill.tag}</span>
-                        <span
-                          className="skill-status-dot"
-                          aria-hidden="true"
-                          style={{
-                            backgroundColor: skill.color,
-                            boxShadow: `0 0 18px ${glowStrong}`,
-                          }}
-                        />
-                      </div>
-
-                      <div className="flex flex-1 flex-col items-center justify-center text-center">
-                        <div
-                          className="skill-icon-shell mb-5 flex h-20 w-20 items-center justify-center rounded-[1.35rem] text-[2.65rem]"
-                          style={{
-                            color: skill.color,
-                            boxShadow: `inset 0 0 0 1px ${glowSoft}, 0 0 35px -12px ${glowStrong}`,
-                          }}
-                        >
-                          {skill.icon}
-                        </div>
-
-                        <h3 className="font-display text-xl font-semibold tracking-wide text-white">
-                          {skill.name}
-                        </h3>
-
-                        <p className="mt-2 text-xs uppercase tracking-[0.38em] text-white/35">
-                          {categoryLabels[skill.category]}
-                        </p>
-                      </div>
-
-                      <div className="mt-8">
-                        <div className="skill-meter">
-                          <motion.div
-                            initial={shouldReduceMotion ? { width: `${skill.level}%`, opacity: 1 } : { width: 0, opacity: 0.7 }}
-                            whileInView={{ width: `${skill.level}%`, opacity: 1 }}
-                            viewport={{ once: true, amount: 0.45 }}
-                            transition={shouldReduceMotion ? { duration: 0.01 } : {
-                              duration: 1.35,
-                              delay: 0.15 + index * 0.06,
-                              ease: [0.22, 1, 0.36, 1],
-                            }}
-                            className="skill-meter-fill"
-                            style={{
-                              background: `linear-gradient(90deg, rgba(${rgb}, 0.35), ${skill.color} 58%, rgba(255, 255, 255, 0.95))`,
-                              boxShadow: `0 0 32px ${glowStrong}`,
-                            }}
-                          />
-                        </div>
-
-                        <div className="mt-3 flex items-center justify-between">
-                          <span className="text-[0.65rem] uppercase tracking-[0.4em] text-white/25">
-                            Live Stack
-                          </span>
-
-                          <div className="skill-signal-dots" aria-hidden="true">
-                            <span />
-                            <span />
-                            <span />
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </motion.div>
-              );
-            })}
+            {filteredSkills.map((skill, index) => (
+              <SkillCube
+                key={skill.name}
+                skill={skill}
+                index={index}
+                shouldReduceMotion={shouldReduceMotion}
+              />
+            ))}
           </AnimatePresence>
         </motion.div>
       </div>

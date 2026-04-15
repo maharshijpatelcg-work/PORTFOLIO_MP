@@ -865,6 +865,372 @@ textarea:-webkit-autofill {
 }
 
 /* ═══════════════════════════════════════════════════════
+   SKILLS — 3D Cube Layout
+   ═══════════════════════════════════════════════════════ */
+
+/* Cube Grid */
+.skill-cubes-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 2.5rem 2rem;
+  justify-items: center;
+  padding: 1rem 0 2rem;
+}
+
+@media (max-width: 1200px) {
+  .skill-cubes-grid {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 2.2rem 1.8rem;
+  }
+}
+
+@media (max-width: 900px) {
+  .skill-cubes-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem 1.5rem;
+  }
+}
+
+@media (max-width: 640px) {
+  .skill-cubes-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2rem 1.2rem;
+  }
+}
+
+@media (max-width: 400px) {
+  .skill-cubes-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.8rem 1rem;
+  }
+}
+
+/* Cube Wrapper */
+.skill-cube-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  cursor: pointer;
+  width: 100%;
+  max-width: 180px;
+}
+
+/* 3D Scene */
+.skill-cube-scene {
+  width: 140px;
+  height: 140px;
+  perspective: 600px;
+  perspective-origin: 50% 50%;
+  position: relative;
+  margin-bottom: 0.5rem;
+}
+
+@media (max-width: 640px) {
+  .skill-cube-scene {
+    width: 110px;
+    height: 110px;
+  }
+}
+
+@media (max-width: 400px) {
+  .skill-cube-scene {
+    width: 95px;
+    height: 95px;
+  }
+}
+
+/* The Cube itself */
+.skill-cube {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  transform-style: preserve-3d;
+  animation: cube-rotate 12s ease-in-out infinite;
+  transition: transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.skill-cube-scene.is-hovered .skill-cube {
+  animation-play-state: paused;
+  transform: rotateX(-15deg) rotateY(-25deg) scale3d(1.1, 1.1, 1.1);
+}
+
+@keyframes cube-rotate {
+  0% {
+    transform: rotateX(-12deg) rotateY(0deg);
+  }
+  25% {
+    transform: rotateX(8deg) rotateY(90deg);
+  }
+  50% {
+    transform: rotateX(-5deg) rotateY(180deg);
+  }
+  75% {
+    transform: rotateX(12deg) rotateY(270deg);
+  }
+  100% {
+    transform: rotateX(-12deg) rotateY(360deg);
+  }
+}
+
+/* Cube Faces */
+.skill-cube-face {
+  position: absolute;
+  width: 140px;
+  height: 140px;
+  backface-visibility: visible;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 16px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: linear-gradient(
+    135deg,
+    rgba(10, 12, 18, 0.92) 0%,
+    rgba(15, 18, 28, 0.88) 50%,
+    rgba(8, 10, 16, 0.95) 100%
+  );
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.06),
+    inset 0 0 30px rgba(0, 0, 0, 0.3);
+}
+
+@media (max-width: 640px) {
+  .skill-cube-face {
+    width: 110px;
+    height: 110px;
+    border-radius: 12px;
+  }
+}
+
+@media (max-width: 400px) {
+  .skill-cube-face {
+    width: 95px;
+    height: 95px;
+    border-radius: 10px;
+  }
+}
+
+/* Cube face translateZ adjustments for smaller screens */
+@media (max-width: 640px) {
+  .skill-cube-front  { transform: rotateY(0deg) translateZ(55px) !important; }
+  .skill-cube-back   { transform: rotateY(180deg) translateZ(55px) !important; }
+  .skill-cube-right  { transform: rotateY(90deg) translateZ(55px) !important; }
+  .skill-cube-left   { transform: rotateY(-90deg) translateZ(55px) !important; }
+  .skill-cube-top    { transform: rotateX(90deg) translateZ(55px) !important; }
+  .skill-cube-bottom { transform: rotateX(-90deg) translateZ(55px) !important; }
+}
+
+@media (max-width: 400px) {
+  .skill-cube-front  { transform: rotateY(0deg) translateZ(47.5px) !important; }
+  .skill-cube-back   { transform: rotateY(180deg) translateZ(47.5px) !important; }
+  .skill-cube-right  { transform: rotateY(90deg) translateZ(47.5px) !important; }
+  .skill-cube-left   { transform: rotateY(-90deg) translateZ(47.5px) !important; }
+  .skill-cube-top    { transform: rotateX(90deg) translateZ(47.5px) !important; }
+  .skill-cube-bottom { transform: rotateX(-90deg) translateZ(47.5px) !important; }
+}
+
+/* Face inner glow overlay */
+.cube-face-glow {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.6;
+  transition: opacity 0.4s ease;
+}
+
+.skill-cube-scene.is-hovered .cube-face-glow {
+  opacity: 1;
+}
+
+/* Face content */
+.cube-face-content {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  width: 100%;
+  height: 100%;
+  padding: 1rem;
+}
+
+/* Icon styling */
+.cube-icon {
+  font-size: 2.8rem;
+  filter: drop-shadow(0 0 12px currentColor);
+  transition: transform 0.4s var(--ease-out-expo), filter 0.4s ease;
+}
+
+@media (max-width: 640px) {
+  .cube-icon {
+    font-size: 2.2rem;
+  }
+}
+
+@media (max-width: 400px) {
+  .cube-icon {
+    font-size: 1.8rem;
+  }
+}
+
+.cube-icon-sm {
+  font-size: 2.2rem;
+  opacity: 0.7;
+}
+
+@media (max-width: 640px) {
+  .cube-icon-sm {
+    font-size: 1.8rem;
+  }
+}
+
+@media (max-width: 400px) {
+  .cube-icon-sm {
+    font-size: 1.5rem;
+  }
+}
+
+.skill-cube-scene.is-hovered .cube-icon {
+  transform: scale(1.15);
+  filter: drop-shadow(0 0 20px currentColor);
+}
+
+/* Name on front face */
+.cube-name {
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.85);
+  text-align: center;
+  white-space: nowrap;
+}
+
+@media (max-width: 400px) {
+  .cube-name {
+    font-size: 0.6rem;
+  }
+}
+
+/* Level % on back face */
+.cube-level {
+  font-size: 2rem;
+  font-weight: 800;
+  font-family: 'Space Grotesk', monospace;
+  letter-spacing: -0.04em;
+  filter: drop-shadow(0 0 8px currentColor);
+}
+
+@media (max-width: 640px) {
+  .cube-level {
+    font-size: 1.6rem;
+  }
+}
+
+/* Tag text */
+.cube-tag {
+  font-size: 0.58rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.45);
+  text-align: center;
+}
+
+/* ── Info panel below each cube ── */
+.skill-cube-info {
+  text-align: center;
+  padding: 0.6rem 0.4rem 0;
+  width: 100%;
+}
+
+.skill-cube-title {
+  font-size: 0.85rem;
+  font-weight: 700;
+  font-family: 'Space Grotesk', sans-serif;
+  letter-spacing: 0.04em;
+  margin-bottom: 0.2rem;
+  transition: text-shadow 0.4s ease;
+}
+
+.skill-cube-wrapper:hover .skill-cube-title {
+  text-shadow: 0 0 18px var(--skill-glow);
+}
+
+.skill-cube-category {
+  font-size: 0.6rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.35);
+  margin-bottom: 0.6rem;
+}
+
+/* Mini progress meter */
+.skill-cube-meter {
+  position: relative;
+  width: 100%;
+  height: 4px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.06);
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+.skill-cube-meter-fill {
+  height: 100%;
+  border-radius: 999px;
+  position: relative;
+}
+
+.skill-cube-meter-fill::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  right: -3px;
+  width: 10px;
+  height: 10px;
+  transform: translateY(-50%);
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.9), transparent 70%);
+  filter: blur(3px);
+}
+
+/* Shadow / Reflection below cube */
+.skill-cube-shadow {
+  position: absolute;
+  bottom: 55px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80px;
+  height: 16px;
+  border-radius: 50%;
+  filter: blur(10px);
+  opacity: 0.5;
+  transition: opacity 0.4s ease;
+  pointer-events: none;
+}
+
+.skill-cube-wrapper:hover .skill-cube-shadow {
+  opacity: 0.8;
+}
+
+/* Wireframe border effect on faces */
+.skill-cube-face::before {
+  content: "";
+  position: absolute;
+  inset: 6px;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  pointer-events: none;
+}
+
+.skill-cube-face::after {
+  content: none;
+}
+
+/* ═══════════════════════════════════════════════════════
    LEETCODE — stats panel responsive
    ═══════════════════════════════════════════════════════ */
 
