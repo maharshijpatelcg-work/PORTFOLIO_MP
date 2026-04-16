@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+﻿import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
 import { FaHtml5, FaCss3Alt, FaJs, FaReact, FaNodeJs, FaGitAlt } from 'react-icons/fa';
 import { SiMongodb, SiC, SiTailwindcss, SiPostman } from 'react-icons/si';
@@ -60,7 +60,7 @@ const sectionBeams = [
   { id: 'beam-three', top: '74%', left: '20%', width: '12rem', rotate: 6, duration: 8, delay: 0.8 },
 ];
 
-/* ── 3D Skill Cube Component ── */
+/* ΓöÇΓöÇ 3D Skill Cube Component ΓöÇΓöÇ */
 const SkillCube = ({ skill, index, shouldReduceMotion }) => {
   const [isHovered, setIsHovered] = useState(false);
   const cubeRef = useRef(null);
@@ -108,7 +108,7 @@ const SkillCube = ({ skill, index, shouldReduceMotion }) => {
             animationDelay: `${index * -2.5}s`,
           }}
         >
-          {/* Front Face — Main display */}
+          {/* Front Face ΓÇö Main display */}
           <div className="skill-cube-face skill-cube-front" style={{ transform: faces[0].transform }}>
             <div className="cube-face-content">
               <span className="cube-icon" style={{ color: skill.color }}>
@@ -309,7 +309,7 @@ const Skills = () => {
             transition={{ delay: 0.2 }}
             className="mx-auto max-w-2xl text-sm text-white/62 sm:text-base"
           >
-            Interactive 3D cubes showcasing each technology — hover to freeze, explore every dimension.
+            Interactive 3D cubes showcasing each technology ΓÇö hover to freeze, explore every dimension.
           </motion.p>
         </div>
 

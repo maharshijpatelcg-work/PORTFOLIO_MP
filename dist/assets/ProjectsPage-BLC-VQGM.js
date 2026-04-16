@@ -1,1 +1,0 @@
-import{j as t}from"./index-DAKBY2fp.js";import r from"./Projects-D0eK-ZIf.js";import"./use-reduced-motion-_KxWts59.js";const m=()=>t.jsx("div",{className:"pt-16 md:pt-0",children:t.jsx(r,{})});export{m as default};
