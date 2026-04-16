@@ -1,7 +1,8 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { FiArrowUp, FiHeart, FiGithub, FiLinkedin, FiTwitter, FiInstagram } from 'react-icons/fi';
+import { FiArrowUp, FiHeart, FiGithub, FiLinkedin, FiTwitter, FiInstagram, FiYoutube } from 'react-icons/fi';
+import { SiLeetcode } from 'react-icons/si';
 
 const Footer = () => {
   const scrollToTop = () => {
@@ -74,12 +75,14 @@ const Footer = () => {
 
           <motion.div variants={itemVariants}>
             <h4 className="mb-4 text-sm font-mono uppercase tracking-widest text-gray-400">Connect</h4>
-            <div className="flex gap-3">
+            <div className="flex flex-wrap gap-3">
               {[
                 { Icon: FiGithub, href: 'https://github.com/maharshijpatelcg-work' },
                 { Icon: FiLinkedin, href: 'https://www.linkedin.com/in/maharshi-patel-1b08b0395/' },
                 { Icon: FiTwitter, href: 'https://x.com/Maharshi_245707' },
                 { Icon: FiInstagram, href: 'https://www.instagram.com/mr._.maharshi_24/' },
+                { Icon: SiLeetcode, href: 'https://leetcode.com/u/MaharshiPatel24/' },
+                { Icon: FiYoutube, href: 'https://youtube.com/@YourChannelHere' },
               ].map(({ Icon, href }, index) => (
                 <a
                   key={`${href}-${index}`}

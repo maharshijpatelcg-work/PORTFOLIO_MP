@@ -1,6 +1,7 @@
 import React, { useState, useRef } from 'react';
 import { motion } from 'framer-motion';
-import { FiMail, FiGithub, FiLinkedin, FiTwitter, FiInstagram, FiSend, FiMapPin, FiCheck, FiAlertCircle } from 'react-icons/fi';
+import { FiMail, FiGithub, FiLinkedin, FiTwitter, FiInstagram, FiYoutube, FiSend, FiMapPin, FiCheck, FiAlertCircle } from 'react-icons/fi';
+import { SiLeetcode } from 'react-icons/si';
 import emailjs from '@emailjs/browser';
 
 const Contact = () => {
@@ -58,6 +59,8 @@ const Contact = () => {
     { Icon: FiLinkedin, href: 'https://www.linkedin.com/in/maharshi-patel-1b08b0395/', label: 'LinkedIn' },
     { Icon: FiTwitter, href: 'https://x.com/Maharshi_245707', label: 'Twitter' },
     { Icon: FiInstagram, href: 'https://www.instagram.com/mr._.maharshi_24/', label: 'Instagram' },
+    { Icon: SiLeetcode, href: 'https://leetcode.com/u/MaharshiPatel24/', label: 'LeetCode' },
+    { Icon: FiYoutube, href: 'https://youtube.com/@YourChannelHere', label: 'YouTube' },
   ];
 
   const contentVariants = {

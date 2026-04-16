@@ -8,75 +8,103 @@ import {
   useSpring,
   useTransform,
 } from 'framer-motion';
-import { FiExternalLink, FiFolder, FiGithub } from 'react-icons/fi';
+import { FiExternalLink, FiFolder, FiGithub, FiYoutube, FiDatabase } from 'react-icons/fi';
+import { SiFigma } from 'react-icons/si';
 
 const PROJECTS = [
   {
     title: 'CropPilot',
+    category: 'fullstack',
     description:
       'AI-powered crop intelligence for Indian farmers - real-time weather, soil conditions, and market data to simplify every farming decision from planning to selling.',
     tech: ['React', 'Node.js', 'MongoDB', 'Express'],
     github: 'https://github.com/maharshijpatelcg-work/SU_2026',
     live: 'https://croppilot-su.vercel.app/',
+    youtube: 'https://youtube.com/watch?v=placeholder',
+    apiDocs: 'https://documenter.getpostman.com/view/placeholder',
     image: '/croppilot-preview.png',
     gradient: 'from-green-500/20 to-emerald-500/20',
     accentColor: '#10b981',
   },
   {
     title: 'FleetFlow',
+    category: 'fullstack',
     description:
       'Fleet and logistics management system with real-time vehicle tracking, maintenance logs, driver dispatch, and a data-driven command center dashboard.',
     tech: ['React', 'Tailwind CSS', 'State Management'],
     github: '#',
     live: 'https://fleet-flow-coding-gita.netlify.app/',
+    youtube: 'https://youtube.com/watch?v=placeholder',
+    figma: 'https://figma.com/file/placeholder',
     image: '/fleetflow-preview.png',
     gradient: 'from-blue-500/20 to-cyan-500/20',
     accentColor: '#06b6d4',
   },
   {
     title: 'Ai-Onboarding-Engine',
+    category: 'fullstack',
     description:
       'RESTful API for state statistics with advanced filtering, sorting, aggregation, and pagination - all powered by in-memory data processing.',
     tech: ['Node.js', 'Express', 'REST API'],
     github: '#',
     live: 'https://iisc-hack.vercel.app/',
+    youtube: 'https://youtube.com/watch?v=placeholder',
     image: '/ai-onboarding-preview.png',
     gradient: 'from-purple-500/20 to-pink-500/20',
     accentColor: '#8b5cf6',
   },
   {
     title: 'X-AI(GROK)',
+    category: 'clone',
     description:
       'This very portfolio! Built with React, Three.js, Framer Motion and premium glassmorphism design system.',
     tech: ['React', 'Three.js', 'Framer Motion', 'Tailwind'],
     github: '#',
     live: 'https://x-ai-clone.vercel.app/',
+    youtube: 'https://youtube.com/watch?v=placeholder',
     image: '/xai-clone-preview.png',
     gradient: 'from-amber-500/20 to-orange-500/20',
     accentColor: '#f59e0b',
   },
   {
     title: 'Counter App',
+    category: 'frontend',
     description:
       'A premium, responsive counter application featuring a modern glassmorphism UI, smooth animations, and persistent state management.',
     tech: ['HTML', 'CSS', 'JavaScript'],
     github: 'https://github.com/maharshijpatelcg-work/MP_PROJECTS',
     live: 'https://count-app-hzll.onrender.com',
+    youtube: 'https://youtube.com/watch?v=placeholder',
     image: '/counter-preview.png',
     gradient: 'from-sky-500/20 to-indigo-500/20',
     accentColor: '#3b82f6',
   },
   {
     title: 'PEAK DESIGN',
+    category: 'clone',
     description:
       'Full-featured task management app with drag-and-drop, deadlines, priority tags, and team collaboration features.',
     tech: ['React', 'Node.js', 'MongoDB'],
     github: 'https://github.com/maharshijpatelcg-work/clone-projects/tree/main/peakdesign',
     live: 'https://peak-design.vercel.app/',
+    youtube: 'https://youtube.com/watch?v=placeholder',
     image: '/taskmanager-preview.png',
     gradient: 'from-rose-500/20 to-red-500/20',
     accentColor: '#f43f5e',
   },
+  {
+    title: 'Placeholder Game',
+    category: 'game',
+    description:
+      'A placeholder game to satisfy the Games category requirement.',
+    tech: ['React', 'JavaScript'],
+    github: '#',
+    live: '#',
+    youtube: 'https://youtube.com/watch?v=placeholder',
+    image: '/counter-preview.png',
+    gradient: 'from-indigo-500/20 to-purple-500/20',
+    accentColor: '#6366f1',
+  }
 ];
 
 const STACK_JITTER = [
@@ -357,6 +385,48 @@ const ProjectCard = ({
                 </span>
               )}
 
+              {project.youtube && project.youtube !== '#' && (
+                <motion.a
+                  href={project.youtube}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="rounded-full glass-strong p-2.5 transition-colors hover:bg-white/20 hover:text-red-500"
+                  title="YouTube Demo"
+                  whileHover={prefersReducedMotion ? undefined : { scale: 1.08, y: -2 }}
+                  whileTap={prefersReducedMotion ? undefined : { scale: 0.97 }}
+                >
+                  <FiYoutube size={16} />
+                </motion.a>
+              )}
+
+              {project.figma && project.figma !== '#' && (
+                <motion.a
+                  href={project.figma}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="rounded-full glass-strong p-2.5 transition-colors hover:bg-white/20 hover:text-[#0acf83]"
+                  title="Figma Design"
+                  whileHover={prefersReducedMotion ? undefined : { scale: 1.08, y: -2 }}
+                  whileTap={prefersReducedMotion ? undefined : { scale: 0.97 }}
+                >
+                  <SiFigma size={16} />
+                </motion.a>
+              )}
+
+              {project.apiDocs && project.apiDocs !== '#' && (
+                <motion.a
+                  href={project.apiDocs}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="rounded-full glass-strong p-2.5 transition-colors hover:bg-white/20 hover:text-blue-400"
+                  title="API Documentation"
+                  whileHover={prefersReducedMotion ? undefined : { scale: 1.08, y: -2 }}
+                  whileTap={prefersReducedMotion ? undefined : { scale: 0.97 }}
+                >
+                  <FiDatabase size={16} />
+                </motion.a>
+              )}
+
               <motion.a
                 href={project.live}
                 target="_blank"
@@ -433,23 +503,37 @@ const ProjectCard = ({
 };
 
 const Projects = () => {
+  const [activeCategory, setActiveCategory] = useState('all');
   const [hoveredIndex, setHoveredIndex] = useState(null);
   const [isExpanded, setIsExpanded] = useState(false);
   const [stackOrigin, setStackOrigin] = useState({ x: '50%', y: '8rem' });
-  const [stackTransforms, setStackTransforms] = useState(() =>
-    PROJECTS.map((_, index) => getFallbackStackTransform(index, PROJECTS.length))
-  );
   const sectionRef = useRef(null);
   const gridRef = useRef(null);
   const cardRefs = useRef([]);
   const prefersReducedMotion = useReducedMotion();
+
+  const categories = [
+    { id: 'all', label: 'All Projects' },
+    { id: 'fullstack', label: 'Full Stack' },
+    { id: 'frontend', label: 'Frontend' },
+    { id: 'clone', label: 'Clones' },
+    { id: 'game', label: 'Games' },
+  ];
+
+  const filteredProjects = activeCategory === 'all' 
+    ? PROJECTS 
+    : PROJECTS.filter(p => p.category === activeCategory);
+
+  const [stackTransforms, setStackTransforms] = useState(() =>
+    filteredProjects.map((_, index) => getFallbackStackTransform(index, filteredProjects.length))
+  );
   const isInView = useInView(sectionRef, { once: true, amount: prefersReducedMotion ? 0.1 : 0.38 });
   const cardsExpanded = prefersReducedMotion || isExpanded;
 
   const measureStack = useCallback(() => {
     const gridElement = gridRef.current;
 
-    if (!gridElement || PROJECTS.some((_, index) => !cardRefs.current[index])) {
+    if (!gridElement || filteredProjects.some((_, index) => !cardRefs.current[index])) {
       return;
     }
 
@@ -461,7 +545,7 @@ const Projects = () => {
 
     setStackOrigin(nextOrigin);
     setStackTransforms(
-      PROJECTS.map((_, index) => {
+      filteredProjects.map((_, index) => {
         const cardElement = cardRefs.current[index];
         const rect = cardElement.getBoundingClientRect();
         const cardCenterX = rect.left - gridRect.left + rect.width / 2;
@@ -475,11 +559,11 @@ const Projects = () => {
           scale: jitter.scale,
           tiltX: jitter.tiltX,
           tiltY: jitter.tiltY,
-          zIndex: PROJECTS.length - index,
+          zIndex: filteredProjects.length - index,
         };
       })
     );
-  }, []);
+  }, [filteredProjects, activeCategory]);
 
   useLayoutEffect(() => {
     measureStack();
@@ -549,6 +633,22 @@ const Projects = () => {
         >
           A selection of projects that showcase my skills and passion for development
         </motion.p>
+      </div>
+
+      <div className="flex flex-wrap justify-center gap-3 mb-16 relative z-30">
+        {categories.map((cat) => (
+          <button
+            key={cat.id}
+            onClick={() => setActiveCategory(cat.id)}
+            className={`px-5 py-2.5 rounded-full text-sm font-medium transition-all duration-300 ${
+              activeCategory === cat.id
+                ? 'bg-accent text-white shadow-glow-sm'
+                : 'glass text-gray-400 hover:text-white hover:bg-white/5'
+            }`}
+          >
+            {cat.label}
+          </button>
+        ))}
       </div>
 
       <div className="relative">

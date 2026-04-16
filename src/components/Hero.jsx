@@ -1,8 +1,10 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { BsGithub, BsLinkedin, BsTwitterX, BsInstagram } from 'react-icons/bs';
+import { BsGithub, BsLinkedin, BsTwitterX, BsInstagram, BsYoutube } from 'react-icons/bs';
+import { SiLeetcode } from 'react-icons/si';
 import { FiArrowRight } from 'react-icons/fi';
+import profileImage from './Maharshi.png';
 
 const ROLES = [
   'Full-Stack Developer',
@@ -67,6 +69,8 @@ const Hero = () => {
     { Icon: BsLinkedin, href: 'https://www.linkedin.com/in/maharshi-patel-1b08b0395/', label: 'LinkedIn', hoverColor: 'hover:text-blue-400 hover:shadow-glow-sm' },
     { Icon: BsTwitterX, href: 'https://x.com/Maharshi_245707', label: 'Twitter', hoverColor: 'hover:text-white hover:shadow-glow-sm' },
     { Icon: BsInstagram, href: 'https://www.instagram.com/mr._.maharshi_24/', label: 'Instagram', hoverColor: 'hover:text-pink-400 hover:shadow-glow-pink' },
+    { Icon: SiLeetcode, href: 'https://leetcode.com/u/MaharshiPatel24/', label: 'LeetCode', hoverColor: 'hover:text-[#FFA116] hover:shadow-glow-sm' },
+    { Icon: BsYoutube, href: 'https://youtube.com/@YourChannelHere', label: 'YouTube', hoverColor: 'hover:text-red-500 hover:shadow-glow-sm' },
   ];
 
   return (
@@ -90,16 +94,24 @@ const Hero = () => {
           </div>
         </motion.div>
 
-        {/* Name */}
-        <motion.div variants={itemVariants}>
-          <span className="text-sm md:text-base text-accent-light font-mono tracking-[0.3em] uppercase mb-4 block">
-            Hello, I'm
-          </span>
-          <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl xl:text-9xl font-display font-bold leading-none tracking-tight mb-4">
-            <span className="gradient-text">Maharshi</span>
-            <br />
-            <span className="text-white">Patel</span>
-          </h1>
+        {/* Profile Photo & Name */}
+        <motion.div variants={itemVariants} className="flex flex-col md:flex-row items-center justify-center gap-6 md:gap-8 mb-8">
+          <div className="relative group">
+            <div className="absolute -inset-1 bg-gradient-to-r from-accent via-neon-cyan to-neon-pink rounded-full blur-md opacity-40 group-hover:opacity-75 transition-all duration-700 animate-gradient-shift" style={{ backgroundSize: '200% 200%' }} />
+            <div className="relative w-32 h-32 md:w-44 md:h-44 rounded-full overflow-hidden border-2 border-white/5 glass shadow-glow-sm">
+              <img src={profileImage} alt="Maharshi Patel" className="w-full h-full object-cover" />
+            </div>
+          </div>
+          <div className="text-center md:text-left">
+            <span className="text-sm md:text-base text-accent-light font-mono tracking-[0.3em] uppercase mb-3 block">
+              Hello, I'm
+            </span>
+            <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-display font-bold leading-none tracking-tight text-white mb-2">
+              <span className="gradient-text drop-shadow-sm">Maharshi</span>
+              <br />
+              Patel
+            </h1>
+          </div>
         </motion.div>
 
         {/* Typewriter */}
