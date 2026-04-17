@@ -1,22 +1,29 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { FiCalendar, FiMapPin, FiAward, FiCode, FiExternalLink } from 'react-icons/fi';
+import { FiCalendar, FiMapPin, FiAward, FiCode, FiExternalLink, FiImage } from 'react-icons/fi';
+
+import su1 from '../assets/su-hackathon/su-1.jpg';
+import su2 from '../assets/su-hackathon/su-2.jpg';
+import su3 from '../assets/su-hackathon/su-3.jpg';
+import su4 from '../assets/su-hackathon/su-4.jpg';
+import su5 from '../assets/su-hackathon/su-5.jpg';
 
 const HACKATHONS = [
   {
     title: 'SU Hackathon',
-    date: 'February 2026',
-    location: 'Sagar University, Virtual',
+    date: 'march 2026',
+    location: 'Sangam University, Virtual',
     role: 'Full Stack Developer',
     project: 'CropPilot',
     description: 'Developed an AI-powered crop intelligence platform for Indian farmers. Secured top position among 50+ participating teams.',
     tech: ['React', 'Node.js', 'MongoDB', 'AI Integration'],
     prize: 'Winner',
-    link: 'https://croppilot-su.vercel.app/'
+    link: 'https://croppilot-su.vercel.app/',
+    images: [su1, su2, su3, su4, su5]
   },
   {
     title: 'ArtPark CodeForge',
-    date: 'January 2026',
+    date: 'march 2026',
     location: 'IISc Bangalore',
     role: 'Backend Architect',
     project: 'Ai-Onboarding-Engine',
@@ -104,14 +111,42 @@ const Hackathons = () => {
                   ))}
                 </div>
                 
-                <a 
-                  href={hackathon.link}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 text-[#f59e0b] hover:text-[#fbbf24] transition-colors text-sm font-medium"
-                >
-                  View Project <FiExternalLink />
-                </a>
+                <div className="mb-8">
+                  <a 
+                    href={hackathon.link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 text-[#f59e0b] hover:text-[#fbbf24] transition-colors text-sm font-medium"
+                  >
+                    View Project <FiExternalLink />
+                  </a>
+                </div>
+
+                {hackathon.images && hackathon.images.length > 0 && (
+                  <div className="mt-8 pt-8 border-t border-white/10">
+                    <h5 className="flex items-center gap-2 text-white text-sm font-semibold mb-6 uppercase tracking-wider">
+                      <FiImage className="text-[#f59e0b]" /> Event Showcase
+                    </h5>
+                    <div className="columns-1 sm:columns-2 lg:columns-3 gap-4 space-y-4">
+                      {hackathon.images.map((img, idx) => (
+                        <motion.div 
+                          key={idx}
+                          whileHover={{ scale: 1.02, y: -5 }}
+                          transition={{ type: "spring", stiffness: 300, damping: 20 }}
+                          className="rounded-xl overflow-hidden border border-white/10 relative break-inside-avoid shadow-lg group bg-black/20"
+                        >
+                          <div className="absolute inset-0 bg-black/40 group-hover:bg-transparent transition-colors duration-500 z-10" />
+                          <img 
+                            src={img} 
+                            alt={`${hackathon.title} moment ${idx + 1}`} 
+                            className="w-full h-auto object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
+                            loading="lazy"
+                          />
+                        </motion.div>
+                      ))}
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
           </motion.div>
