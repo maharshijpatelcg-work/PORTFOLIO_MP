@@ -1,7 +1,7 @@
-﻿import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
 import { FaHtml5, FaCss3Alt, FaJs, FaReact, FaNodeJs, FaGitAlt } from 'react-icons/fa';
-import { SiMongodb, SiC, SiTailwindcss, SiPostman } from 'react-icons/si';
+import { SiMongodb, SiC, SiTailwindcss, SiPostman, SiFigma, SiVercel, SiRender, SiCplusplus, SiNetlify } from 'react-icons/si';
 
 const hexToRgb = (hex) => {
   const sanitized = hex.replace('#', '').trim();
@@ -211,6 +211,11 @@ const Skills = () => {
     { name: 'C Language', icon: <SiC />, color: '#A8B9CC', level: 75, category: 'backend', tag: 'Core Programming' },
     { name: 'Git', icon: <FaGitAlt />, color: '#F05032', level: 78, category: 'tools', tag: 'Version Control' },
     { name: 'Postman', icon: <SiPostman />, color: '#FF6C37', level: 80, category: 'tools', tag: 'API Testing' },
+    { name: 'UI/UX Design', icon: <SiFigma />, color: '#F24E1E', level: 85, category: 'tools', tag: 'User Experience' },
+    { name: 'Vercel', icon: <SiVercel />, color: '#FFFFFF', level: 85, category: 'tools', tag: 'Deployment' },
+    { name: 'Render', icon: <SiRender />, color: '#46E3B7', level: 80, category: 'tools', tag: 'Cloud Hosting' },
+    { name: 'Netlify', icon: <SiNetlify />, color: '#00C7B7', level: 85, category: 'tools', tag: 'Deployment' },
+    { name: 'C++', icon: <SiCplusplus />, color: '#00599C', level: 82, category: 'backend', tag: 'System Programming' },
   ];
 
   const filteredSkills = activeCategory === 'all'

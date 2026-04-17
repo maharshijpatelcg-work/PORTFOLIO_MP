@@ -66,16 +66,7 @@ const Navbar = () => {
   }, [isHomePage]);
 
   const handleNavClick = (event, link) => {
-    if (isHomePage) {
-      event.preventDefault();
-      const element = document.getElementById(link.sectionId);
-
-      if (element) {
-        element.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        setActiveHomeSection(link.sectionId);
-      }
-    }
-
+    // Rely on React Router's native <Link> for true page navigation
     setMobileOpen(false);
   };
 

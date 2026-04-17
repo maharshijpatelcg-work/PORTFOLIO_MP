@@ -262,6 +262,27 @@ const LeetCode = () => {
           </motion.div>
         </motion.div>
       </div>
+
+      {/* Activity Graph Section */}
+      <motion.div
+        variants={itemVariants}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true }}
+        className="max-w-4xl mx-auto mt-6 glass-card rounded-2xl p-6 md:p-8"
+      >
+        <div className="flex items-center gap-3 mb-6">
+          <FiZap className="text-[#FFA116] text-xl" />
+          <h3 className="text-lg font-display font-bold">Activity Heatmap</h3>
+        </div>
+        <div className="w-full rounded-xl overflow-hidden flex justify-center items-center">
+          <img 
+            src="/leetcode-graph.png" 
+            alt="LeetCode Activity Graph" 
+            className="w-full max-w-3xl h-auto opacity-90 transition-all duration-300 hover:opacity-100 hover:scale-[1.01]"
+          />
+        </div>
+      </motion.div>
     </section>
   );
 };

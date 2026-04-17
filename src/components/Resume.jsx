@@ -80,7 +80,7 @@ const Resume = () => {
               {/* PDF Viewer - Using iframe for native browser PDF rendering */}
               <div className="flex-1 bg-white relative w-full h-full">
                 <iframe
-                  src="/resume.pdf#toolbar=0"
+                  src="https://resume-mp.vercel.app/"
                   className="absolute inset-0 w-full h-full border-0"
                   title="Maharshi Patel Resume"
                 />

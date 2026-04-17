@@ -5,10 +5,10 @@ import { FiExternalLink } from 'react-icons/fi';
 
 const DESIGNS = [
   {
-    title: 'CropPilot Mobile App',
-    description: 'UI/UX design for the Indian farmer companion app, featuring a clean, accessible interface with regional language support.',
-    image: '/croppilot-preview.png',
-    link: 'https://figma.com/file/placeholder1'
+    title: 'MEDDICAL',
+    description: 'A collaborative UI/UX design file created in Figma to design, prototype, and visualize a digital product interface.',
+    image: '/meddical.png',
+    link: 'https://www.figma.com/design/xDn6ikgr3vzDb0Ps5pZKEh/Untitled?node-id=0-1&t=JKwcNg0XIj7XAGSE-1'
   }
 ];
 
