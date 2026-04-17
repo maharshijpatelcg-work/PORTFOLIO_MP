@@ -9,12 +9,6 @@ const DESIGNS = [
     description: 'UI/UX design for the Indian farmer companion app, featuring a clean, accessible interface with regional language support.',
     image: '/croppilot-preview.png',
     link: 'https://figma.com/file/placeholder1'
-  },
-  {
-    title: 'FleetFlow Command Center',
-    description: 'Dashboard design for logistics management with data visualization components and dark mode aesthetic.',
-    image: '/fleetflow-preview.png',
-    link: 'https://figma.com/file/placeholder2'
   }
 ];
 
@@ -50,7 +44,7 @@ const FigmaDesigns = () => {
         </motion.p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+      <div className="flex justify-center items-center w-full max-w-4xl mx-auto">
         {DESIGNS.map((design, index) => (
           <motion.div
             key={index}
@@ -58,7 +52,7 @@ const FigmaDesigns = () => {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: index * 0.1 + 0.2 }}
-            className="group relative rounded-2xl glass overflow-hidden border border-white/5 hover:border-[#0acf83]/30 transition-all duration-500"
+            className="group relative rounded-2xl glass overflow-hidden border border-white/5 hover:border-[#0acf83]/30 transition-all duration-500 w-full"
           >
             <div className="aspect-video overflow-hidden">
               <img 
