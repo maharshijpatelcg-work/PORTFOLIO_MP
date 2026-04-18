@@ -1,15 +1,19 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FiHome, FiUser, FiCpu, FiFolder, FiAward, FiCode, FiMail, FiMenu, FiX } from 'react-icons/fi';
+import { FiHome, FiUser, FiCpu, FiFolder, FiAward, FiCode, FiMail, FiMenu, FiX, FiLayout, FiTerminal, FiStar, FiFileText } from 'react-icons/fi';
 
 const NAV_LINKS = [
   { name: 'Home', href: '/', sectionId: 'home', icon: FiHome },
   { name: 'About', href: '/about', sectionId: 'about', icon: FiUser },
   { name: 'Skills', href: '/skills', sectionId: 'skills', icon: FiCpu },
   { name: 'Projects', href: '/projects', sectionId: 'projects', icon: FiFolder },
+  { name: 'Figma', href: '/figma-designs', sectionId: 'figmas', icon: FiLayout },
+  { name: 'Hackathons', href: '/hackathons', sectionId: 'hackathons', icon: FiTerminal },
   { name: 'Certificates', href: '/certificates', sectionId: 'certificates', icon: FiAward },
+  { name: 'Milestones', href: '/achievements', sectionId: 'achievements', icon: FiStar },
   { name: 'LeetCode', href: '/leetcode', sectionId: 'leetcode', icon: FiCode },
+  { name: 'Resume', href: '/resume', sectionId: 'resume', icon: FiFileText },
   { name: 'Contact', href: '/contact', sectionId: 'contact', icon: FiMail },
 ];
 

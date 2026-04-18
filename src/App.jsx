@@ -2,6 +2,10 @@ import React, { lazy, Suspense } from 'react';
 import { Routes, Route, useLocation } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import CustomCursor from './components/CustomCursor';
+import ChatBot from './components/ChatBot';
+import VoiceAssistant from './components/VoiceAssistant';
+import CameraAssistant from './components/CameraAssistant';
+import ArcadeHub from './components/ArcadeHub';
 import './App.css';
 
 // Lazy load page components
@@ -9,8 +13,12 @@ const Home = lazy(() => import('./pages/Home'));
 const AboutPage = lazy(() => import('./pages/AboutPage'));
 const SkillsPage = lazy(() => import('./pages/SkillsPage'));
 const ProjectsPage = lazy(() => import('./pages/ProjectsPage'));
+const FigmaDesignsPage = lazy(() => import('./pages/FigmaDesignsPage'));
+const HackathonsPage = lazy(() => import('./pages/HackathonsPage'));
 const CertificatesPage = lazy(() => import('./pages/CertificatesPage'));
+const AchievementsPage = lazy(() => import('./pages/AchievementsPage'));
 const LeetCodePage = lazy(() => import('./pages/LeetCodePage'));
+const ResumePage = lazy(() => import('./pages/ResumePage'));
 const ContactPage = lazy(() => import('./pages/ContactPage'));
 const Footer = lazy(() => import('./components/Footer'));
 
@@ -32,8 +40,12 @@ function ScrollToTop() {
 
 function App() {
   return (
-    <div className="app min-h-screen bg-transparent text-white relative md:pl-16">
+    <div className="app min-h-screen bg-transparent text-white relative md:pl-16 overflow-x-hidden">
       <CustomCursor />
+      <ChatBot />
+      <VoiceAssistant />
+      <CameraAssistant />
+      <ArcadeHub />
 
       {/* Premium black geometric background */}
       <div
@@ -53,8 +65,12 @@ function App() {
             <Route path="/about" element={<AboutPage />} />
             <Route path="/skills" element={<SkillsPage />} />
             <Route path="/projects" element={<ProjectsPage />} />
+            <Route path="/figma-designs" element={<FigmaDesignsPage />} />
+            <Route path="/hackathons" element={<HackathonsPage />} />
             <Route path="/certificates" element={<CertificatesPage />} />
+            <Route path="/achievements" element={<AchievementsPage />} />
             <Route path="/leetcode" element={<LeetCodePage />} />
+            <Route path="/resume" element={<ResumePage />} />
             <Route path="/contact" element={<ContactPage />} />
           </Routes>
         </Suspense>
