@@ -62,23 +62,33 @@ const Resume = () => {
               initial={{ scale: 0.95, opacity: 0, y: 20 }}
               animate={{ scale: 1, opacity: 1, y: 0 }}
               exit={{ scale: 0.95, opacity: 0, y: 20 }}
-              className="bg-[#1e1e1e] border border-white/10 rounded-2xl w-full max-w-5xl h-[85vh] sm:h-[90vh] flex flex-col overflow-hidden shadow-2xl relative"
+              className="bg-[#1e1e1e] border border-white/10 rounded-2xl w-full max-w-5xl h-[90dvh] sm:h-[90vh] flex flex-col overflow-hidden shadow-2xl relative"
             >
               {/* Modal Header */}
-              <div className="flex justify-between items-center p-4 border-b border-white/10 bg-black/40">
-                <h3 className="text-white font-medium flex items-center gap-2">
+              <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center p-4 border-b border-white/10 bg-black/40 relative">
+                <h3 className="text-white font-medium flex items-center gap-2 mb-2 sm:mb-0">
                   <FiFileText className="text-accent" /> Maharshi_Patel_Resume.pdf
                 </h3>
-                <button
-                  onClick={() => setIsOpen(false)}
-                  className="p-2 text-gray-400 hover:text-white hover:bg-white/10 rounded-full transition-colors"
-                >
-                  <FiX size={24} />
-                </button>
+                <div className="flex items-center gap-4">
+                  <a 
+                    href="https://resume-mp.vercel.app/" 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="text-xs font-mono text-accent hover:text-accent-light underline underline-offset-4 transition-colors"
+                  >
+                    Open Fullscreen Mobile Viewer
+                  </a>
+                  <button
+                    onClick={() => setIsOpen(false)}
+                    className="absolute top-4 right-4 sm:static p-2 text-gray-400 hover:text-white hover:bg-white/10 rounded-full transition-colors"
+                  >
+                    <FiX size={24} />
+                  </button>
+                </div>
               </div>
               
-              {/* PDF Viewer - Using iframe for native browser PDF rendering */}
-              <div className="flex-1 bg-white relative w-full h-full">
+              {/* PDF Viewer - Enhanced mobile scrolling wrapper */}
+              <div className="flex-1 bg-white relative w-full h-full overflow-hidden" style={{ WebkitOverflowScrolling: 'touch' }}>
                 <iframe
                   src="https://resume-mp.vercel.app/"
                   className="absolute inset-0 w-full h-full border-0"

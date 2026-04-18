@@ -39,7 +39,7 @@ const TicTacToe = () => {
   };
 
   return (
-    <div className="flex flex-col items-center w-full max-w-sm mx-auto">
+    <div className="flex flex-col items-center w-full max-w-sm mx-auto h-full min-h-0 py-8 pb-32">
       <div className="flex w-full items-center justify-between mb-6 px-4">
         <h3 className="font-display text-2xl font-black italic tracking-tighter text-white">TIC-TAC-TOE</h3>
         <button 

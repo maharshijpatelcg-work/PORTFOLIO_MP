@@ -6,6 +6,8 @@ import ChatBot from './components/ChatBot';
 import VoiceAssistant from './components/VoiceAssistant';
 import CameraAssistant from './components/CameraAssistant';
 import ArcadeHub from './components/ArcadeHub';
+import ThemeSwitcher from './components/ThemeSwitcher';
+import Preloader from './components/Preloader';
 import './App.css';
 
 // Lazy load page components
@@ -41,7 +43,9 @@ function ScrollToTop() {
 function App() {
   return (
     <div className="app min-h-screen bg-transparent text-white relative md:pl-16 overflow-x-hidden">
+      <Preloader />
       <CustomCursor />
+      <ThemeSwitcher />
       <ChatBot />
       <VoiceAssistant />
       <CameraAssistant />

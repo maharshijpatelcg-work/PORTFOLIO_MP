@@ -1,4 +1,5 @@
 import React, { useEffect, useRef } from 'react';
+import { createPortal } from 'react-dom';
 
 const CustomCursor = () => {
   const dotRef = useRef(null);
@@ -40,7 +41,7 @@ const CustomCursor = () => {
     };
     animate();
 
-    // Attach hover listeners to interactive elements — use event delegation instead of MutationObserver
+    // Attach hover listeners to interactive elements
     const onMouseOver = (e) => {
       const target = e.target.closest('a, button, input, textarea, [role="button"]');
       if (target) {
@@ -68,7 +69,7 @@ const CustomCursor = () => {
     };
   }, []); // Empty dependency array — runs once only
 
-  return (
+  return createPortal(
     <>
       {/* Small glowing dot — follows mouse instantly */}
       <div
@@ -78,11 +79,11 @@ const CustomCursor = () => {
           width: '8px',
           height: '8px',
           borderRadius: '50%',
-          background: '#7c3aed',
+          background: 'var(--color-accent, #7c3aed)',
           boxShadow: '0 0 12px 4px rgba(124, 58, 237, 0.6), 0 0 24px 8px rgba(124, 58, 237, 0.3)',
           transition: 'width 0.3s, height 0.3s',
           willChange: 'transform',
-          transform: 'translate(0px, 0px) translate(-50%, -50%) scale(1)',
+          transform: 'translate(-100px, -100px) translate(-50%, -50%) scale(1)',
         }}
       />
 
@@ -94,13 +95,14 @@ const CustomCursor = () => {
           width: '36px',
           height: '36px',
           borderRadius: '50%',
-          border: '1.5px solid rgba(124, 58, 237, 0.4)',
+          border: '1.5px solid var(--color-accent, rgba(124, 58, 237, 0.4))',
           transition: 'width 0.3s, height 0.3s, border-color 0.3s',
           willChange: 'transform',
-          transform: 'translate(0px, 0px) translate(-50%, -50%) scale(1)',
+          transform: 'translate(-100px, -100px) translate(-50%, -50%) scale(1)',
         }}
       />
-    </>
+    </>,
+    document.body
   );
 };
 

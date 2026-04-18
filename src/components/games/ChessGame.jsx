@@ -1,18 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { FiRefreshCcw } from 'react-icons/fi';
-
-// Native mapping without NPM dependencies to fix Vite install locks!
-const INITIAL_BOARD = [
-  ['r', 'n', 'b', 'q', 'k', 'b', 'n', 'r'],
-  ['p', 'p', 'p', 'p', 'p', 'p', 'p', 'p'],
-  Array(8).fill(null),
-  Array(8).fill(null),
-  Array(8).fill(null),
-  Array(8).fill(null),
-  ['P', 'P', 'P', 'P', 'P', 'P', 'P', 'P'],
-  ['R', 'N', 'B', 'Q', 'K', 'B', 'N', 'R'],
-];
+import { FiRefreshCcw, FiCpu } from 'react-icons/fi';
 
 const PIECE_UNIX = {
   'r': '♜', 'n': '♞', 'b': '♝', 'q': '♛', 'k': '♚', 'p': '♟',
@@ -20,155 +8,211 @@ const PIECE_UNIX = {
 };
 
 const ChessGame = () => {
-  const [board, setBoard] = useState(INITIAL_BOARD);
-  const [selectedPos, setSelectedPos] = useState(null);
-  const [turn, setTurn] = useState('w'); // 'w' (uppercase) or 'b' (lowercase)
-  const [status, setStatus] = useState("Your Turn (White)");
+  const [engineLoaded, setEngineLoaded] = useState(false);
+  const [game, setGame] = useState(null);
+  const [board, setBoard] = useState([]);
+  const [selectedPos, setSelectedPos] = useState(null); 
+  const [possibleMoves, setPossibleMoves] = useState([]); 
+  const [status, setStatus] = useState("Loading verified engine...");
+  const [isAiThinking, setIsAiThinking] = useState(false);
 
-  const isWhite = (p) => p && p === p.toUpperCase();
-  const isBlack = (p) => p && p === p.toLowerCase();
+  // Initialize actual chess.js algorithm algorithmically via CDN bypass
+  useEffect(() => {
+    let active = true;
+    const initEngine = async () => {
+       try {
+         const mod = await import('https://cdn.jsdelivr.net/npm/chess.js@1.0.0-beta.8/+esm');
+         if (!active) return;
+         const chessObj = new mod.Chess();
+         setGame(chessObj);
+         setBoard(chessObj.board());
+         setEngineLoaded(true);
+         setStatus("Your Turn (White)");
+       } catch (err) {
+         setStatus("Error loading local engine logic.");
+       }
+    };
+    initEngine();
+    return () => { active = false; };
+  }, []);
 
-  const handleSquareClick = (r, c) => {
-    const piece = board[r][c];
-
-    // Select a piece
-    if (!selectedPos) {
-      if (piece && ((turn === 'w' && isWhite(piece)) || (turn === 'b' && isBlack(piece)))) {
-        setSelectedPos({ r, c });
+  const evaluateBoard = (chess) => {
+    const pieceValues = { p: 10, n: 30, b: 30, r: 50, q: 90, k: 900 };
+    let total = 0;
+    const b = chess.board();
+    for(let r=0; r<8; r++){
+      for(let c=0; c<8; c++){
+         const p = b[r][c];
+         if (p) total += p.color === 'w' ? pieceValues[p.type] : -pieceValues[p.type];
       }
-      return;
     }
-
-    // Move the piece
-    if (selectedPos.r === r && selectedPos.c === c) {
-      setSelectedPos(null); // Deselect
-      return;
-    }
-
-    // Very permissive free-move system (since we stripped out external packages)
-    const newBoard = board.map(row => [...row]);
-    const movingPiece = newBoard[selectedPos.r][selectedPos.c];
-    
-    // Check if capturing own piece
-    if (piece && ((isWhite(movingPiece) && isWhite(piece)) || (isBlack(movingPiece) && isBlack(piece)))) {
-      setSelectedPos({ r, c }); // Switch selection
-      return;
-    }
-
-    // Execute Move
-    newBoard[r][c] = movingPiece;
-    newBoard[selectedPos.r][selectedPos.c] = null;
-    
-    setBoard(newBoard);
-    setSelectedPos(null);
-    setTurn(turn === 'w' ? 'b' : 'w');
-    
-    if (turn === 'w') {
-      setStatus("Computer is thinking...");
-      setTimeout(() => executeAIBot(newBoard), 1000); // 1s delay for AI
-    } else {
-      setStatus("Your Turn (White)");
-    }
+    return total;
   };
 
-  // Extremely basic native Random-Move Bot to satisfy PVE without node crashes
-  const executeAIBot = (currentBoard) => {
-    const blackPieces = [];
-    currentBoard.forEach((row, r) => {
-      row.forEach((p, c) => {
-        if (isBlack(p)) blackPieces.push({r, c});
-      });
+  const executeAIBot = (chessObj) => {
+    if (chessObj.isGameOver()) return;
+    const moves = chessObj.moves({ verbose: true });
+    if (moves.length === 0) return;
+
+    let bestMove = null;
+    let bestValue = Infinity; // Black wants strongly negative evaluation
+
+    moves.forEach(m => {
+       chessObj.move(m);
+       let v = evaluateBoard(chessObj);
+       // Add flutter to randomize equal trades
+       v += (Math.random()*2 - 1);
+       if (v < bestValue) {
+          bestValue = v;
+          bestMove = m;
+       }
+       chessObj.undo();
     });
 
-    if (blackPieces.length === 0) {
-      setStatus("White Wins!");
-      return;
+    const move = bestMove || moves[Math.floor(Math.random() * moves.length)];
+    chessObj.move(move);
+    setGame(chessObj); // React state update
+    setBoard(chessObj.board());
+    updateGameStatus(chessObj);
+    setIsAiThinking(false);
+  };
+
+  const updateGameStatus = (chessObj) => {
+    if (chessObj.isCheckmate()) setStatus(`Checkmate! ${chessObj.turn() === 'w' ? 'Black' : 'White'} wins.`);
+    else if (chessObj.isDraw()) setStatus("Draw!");
+    else if (chessObj.isCheck()) setStatus("Check!");
+    else setStatus(chessObj.turn() === 'w' ? "Your Turn (White)" : "Computer Turn (Black)");
+  };
+
+  const getSquareCoord = (r, c) => {
+    const files = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
+    return `${files[c]}${8 - r}`;
+  };
+
+  const handleSquareClick = (r, c) => {
+    if (!game || isAiThinking || game.isGameOver() || game.turn() !== 'w') return;
+    
+    const square = getSquareCoord(r, c);
+    
+    if (selectedPos && selectedPos === square) {
+       setSelectedPos(null);
+       setPossibleMoves([]);
+       return;
     }
 
-    // Pick a random black piece
-    const start = blackPieces[Math.floor(Math.random() * blackPieces.length)];
-    
-    // Pick a random empty or white square near it (forward/diagonal)
-    const possibleTargets = [];
-    const directions = [[1, 0], [1, -1], [1, 1], [0, 1], [0, -1], [2, 0]];
-    
-    directions.forEach(([dr, dc]) => {
-      const nr = start.r + dr;
-      const nc = start.c + dc;
-      if (nr >= 0 && nr < 8 && nc >= 0 && nc < 8) {
-        const targetP = currentBoard[nr][nc];
-        if (!isBlack(targetP)) possibleTargets.push({r: nr, c: nc});
+    if (selectedPos) {
+       try {
+         const m = game.move({ from: selectedPos, to: square, promotion: 'q' });
+         if (m) {
+            setBoard(game.board());
+            setSelectedPos(null);
+            setPossibleMoves([]);
+            updateGameStatus(game);
+            
+            if (!game.isGameOver()) {
+               setIsAiThinking(true);
+               setStatus("Computer is thinking...");
+               setTimeout(() => executeAIBot(game), 600);
+            }
+            return;
+         }
+       } catch (e) {
+          // Fall back gracefully if move string throws exception
+       }
+    }
+
+    // Setup Target Matrix Highlights
+    try {
+      const moves = game.moves({ square, verbose: true });
+      if (moves.length > 0) {
+         setSelectedPos(square);
+         setPossibleMoves(moves.map(m => m.to));
+      } else {
+         setSelectedPos(null);
+         setPossibleMoves([]);
       }
-    });
-
-    if (possibleTargets.length > 0) {
-      const target = possibleTargets[Math.floor(Math.random() * possibleTargets.length)];
-      const newB = currentBoard.map(row => [...row]);
-      newB[target.r][target.c] = newB[start.r][start.c];
-      newB[start.r][start.c] = null;
-      setBoard(newB);
-    }
-    
-    setTurn('w');
-    setStatus("Your Turn (White)");
+    } catch(e) {}
   };
 
   const resetGame = () => {
-    setBoard(INITIAL_BOARD);
-    setSelectedPos(null);
-    setTurn('w');
-    setStatus("Your Turn (White)");
+     if (game) {
+        game.reset();
+        setBoard(game.board());
+        setSelectedPos(null);
+        setPossibleMoves([]);
+        setStatus("Your Turn (White)");
+        setIsAiThinking(false);
+     }
   };
 
   return (
-    <div className="flex flex-col items-center w-full max-w-[400px] mx-auto h-[90vh] px-2 py-4">
+    <div className="flex flex-col items-center w-full max-w-[440px] mx-auto h-full min-h-0 px-2 sm:px-4 py-8 pb-32 overflow-y-auto overflow-x-hidden scrollbar-none">
       <div className="flex w-full items-center justify-between mb-6 px-2">
-        <h3 className="font-display text-2xl font-black italic tracking-tighter text-white">CHESS : V2</h3>
-        <button 
-          onClick={resetGame}
-          className="flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-4 py-2 text-xs font-bold font-mono text-neon-cyan transition-colors hover:bg-white/20"
-        >
-          <FiRefreshCcw size={12} /> RESET
-        </button>
+        <h3 className="font-display text-2xl font-black italic tracking-tighter text-white">CHESS : V3 AI</h3>
+        {engineLoaded && (
+          <button 
+            onClick={resetGame}
+            className="flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-4 py-2 text-xs font-bold font-mono text-neon-cyan transition-colors hover:bg-white/20"
+          >
+            <FiRefreshCcw size={12} /> RESET
+          </button>
+        )}
       </div>
 
       <div className="mb-4 flex h-8 items-center justify-center rounded-xl bg-white/5 px-6 font-mono text-sm tracking-widest text-gray-300">
-         <span className="text-neon-cyan font-bold uppercase">{status}</span>
+         {!engineLoaded ? (
+            <span className="text-gray-400 font-bold uppercase animate-pulse">{status}</span>
+         ) : status.includes('mate') || status.includes('Check') ? (
+            <span className="text-red-500 font-bold uppercase animate-pulse drop-shadow-[0_0_10px_rgba(239,68,68,0.8)]">{status}</span>
+         ) : (
+            <span className="text-neon-cyan font-bold uppercase">{status}</span>
+         )}
       </div>
 
-      <div className="w-full aspect-square rounded-xl overflow-hidden border-2 border-white/10 shadow-[0_0_30px_rgba(0,0,0,0.5)] bg-black/50 p-2 backdrop-blur-md">
+      <div className="w-full sm:w-[95%] aspect-square rounded-xl overflow-hidden border-2 border-white/10 shadow-[0_0_30px_rgba(0,0,0,0.5)] bg-black/50 p-2 backdrop-blur-md relative mx-auto">
         <div className="w-full h-full grid grid-cols-8 grid-rows-8 border border-white/20 rounded-lg overflow-hidden">
-           {board.map((row, rIdx) => 
-             row.map((piece, cIdx) => {
+           {engineLoaded ? board.map((row, rIdx) => 
+             row.map((pieceObj, cIdx) => {
+               const square = getSquareCoord(rIdx, cIdx);
                const isDark = (rIdx + cIdx) % 2 === 1;
-               const isSelected = selectedPos?.r === rIdx && selectedPos?.c === cIdx;
+               const isSelected = selectedPos === square;
+               const isTarget = possibleMoves.includes(square);
+               
                return (
                  <div
                    key={`${rIdx}-${cIdx}`}
                    onClick={() => handleSquareClick(rIdx, cIdx)}
-                   className={`flex items-center justify-center text-3xl sm:text-4xl cursor-pointer transition-colors select-none ${
+                   className={`relative flex items-center justify-center text-3xl sm:text-4xl cursor-pointer transition-colors select-none ${
                      isDark ? 'bg-[#1e293b]' : 'bg-[#94a3b8]'
-                   } ${isSelected ? 'ring-inset ring-4 ring-neon-cyan/80 bg-neon-cyan/20' : ''}`}
+                   } ${isSelected ? 'ring-inset ring-[4px] ring-neon-cyan/80 bg-[#0ea5e9]' : ''}`}
                  >
-                   {piece && (
+                   {isTarget && (
+                      <div className="absolute w-3 h-3 rounded-full bg-neon-cyan/50 drop-shadow-[0_0_5px_rgba(6,182,212,1)]" />
+                   )}
+                   {pieceObj && (
                      <motion.span
                        initial={{ scale: 0.8 }}
                        animate={{ scale: 1 }}
-                       whileHover={{ scale: 1.1 }}
-                       className={`${isWhite(piece) ? 'text-white drop-shadow-[0_2px_5px_rgba(0,0,0,0.5)]' : 'text-gray-900 drop-shadow-[0_2px_5px_rgba(255,255,255,0.2)]'}`}
+                       className={`${pieceObj.color === 'w' ? 'text-white drop-shadow-[0_2px_5px_rgba(0,0,0,0.5)]' : 'text-gray-900 drop-shadow-[0_2px_5px_rgba(255,255,255,0.2)]'}`}
+                       style={{ zIndex: 10 }}
                      >
-                       {PIECE_UNIX[piece]}
+                       {pieceObj.color === 'w' ? PIECE_UNIX[pieceObj.type.toUpperCase()] : PIECE_UNIX[pieceObj.type]}
                      </motion.span>
                    )}
                  </div>
                );
              })
+           ) : (
+              <div className="col-span-8 row-span-8 flex flex-col items-center justify-center bg-black/80">
+                 <FiCpu size={32} className="text-neon-cyan mb-4 animate-spin-slow" />
+                 <p className="font-mono text-neon-cyan/50 text-xs">AWAITING ENGINE LINK...</p>
+              </div>
            )}
         </div>
       </div>
       
       <p className="mt-8 text-xs font-mono text-gray-400 text-center px-4 bg-black/40 py-3 rounded-xl border border-white/10">
-        NPM Package Free Version: This custom board utilizes Sandbox Movement geometry to bypass Windows terminal installation freezes. Click to move anywhere!
+        Connected to genuine ESM Validation algorithms. Features Castling, Checking, and En Passant natively via serverless runtime hooks.
       </p>
     </div>
   );

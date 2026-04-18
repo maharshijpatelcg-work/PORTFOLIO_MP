@@ -52,8 +52,8 @@ const ArcadeHub = () => {
               initial={{ opacity: 0, scale: 0.9, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.9, y: 20 }}
-              className={`relative overflow-hidden rounded-[2rem] border border-white/20 bg-black/90 shadow-[0_0_50px_rgba(168,85,247,0.3)] transition-all duration-300 ${
-                activeGame ? 'w-full max-w-[1200px] h-[90vh]' : 'w-full max-w-[600px] h-auto p-8'
+              className={`relative overflow-hidden rounded-none md:rounded-[2rem] border-0 md:border border-white/20 bg-black/90 shadow-[0_0_50px_rgba(168,85,247,0.3)] transition-all duration-300 ${
+                activeGame ? 'w-full max-w-[1200px] h-[100dvh] md:h-[95vh]' : 'w-full max-w-[600px] h-[100dvh] md:h-auto p-4 md:p-8'
               }`}
             >
               

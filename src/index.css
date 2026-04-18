@@ -229,7 +229,7 @@ button::-moz-focus-inner {
 
   /* ── Gradient Text — animated ── */
   .gradient-text {
-    background: linear-gradient(135deg, #a855f7, #60a5fa, #c084fc, #06b6d4);
+    background: linear-gradient(135deg, var(--color-accent-light, #a855f7), var(--color-neon-blue, #60a5fa), var(--color-neon-purple, #c084fc), var(--color-neon-cyan, #06b6d4));
     background-size: 300% 300%;
     -webkit-background-clip: text;
     background-clip: text;
@@ -239,7 +239,7 @@ button::-moz-focus-inner {
   }
 
   .gradient-text-static {
-    background: linear-gradient(135deg, #8b5cf6, #06b6d4);
+    background: linear-gradient(135deg, var(--color-accent, #8b5cf6), var(--color-neon-cyan, #06b6d4));
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;

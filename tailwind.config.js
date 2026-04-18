@@ -11,19 +11,19 @@ export default {
         primary: "#030206",
         secondary: "#080512",
         accent: {
-          DEFAULT: "#8b5cf6", // Cosmic Purple
-          light: "#a855f7",   // Bright Purple
-          dark: "#6d28d9",    // Deep Purple
+          DEFAULT: "var(--color-accent, #8b5cf6)",
+          light: "var(--color-accent-light, #a855f7)",
+          dark: "var(--color-accent-dark, #6d28d9)",
         },
         neon: {
-          cyan: "#06b6d4",    // Nebula Cyan
-          purple: "#c084fc",  // Light Purple
-          pink: "#f472b6",    // Star Pink
-          blue: "#3b82f6",    // Cosmic Blue
+          cyan: "var(--color-neon-cyan, #06b6d4)",
+          purple: "var(--color-neon-purple, #c084fc)",
+          pink: "var(--color-neon-pink, #f472b6)",
+          blue: "var(--color-neon-blue, #3b82f6)",
         },
         glass: {
-          white: "rgba(255, 255, 255, 0.05)",
-          border: "rgba(139, 92, 246, 0.25)", // Purple border for glass to match universe
+          white: "var(--color-glass-white, rgba(255, 255, 255, 0.05))",
+          border: "var(--color-glass-border, rgba(139, 92, 246, 0.25))", 
         }
       },
       fontFamily: {
