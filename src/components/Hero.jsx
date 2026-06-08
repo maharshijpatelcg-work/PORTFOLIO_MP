@@ -22,8 +22,8 @@ const Hero = () => {
   const mouseX = useMotionValue(0.5);
   const mouseY = useMotionValue(0.5);
 
-  const rotateX = useSpring(useTransform(mouseY, [0, 1], [15, -15]), { damping: 30, stiffness: 200, mass: 0.5 });
-  const rotateY = useSpring(useTransform(mouseX, [0, 1], [-15, 15]), { damping: 30, stiffness: 200, mass: 0.5 });
+  const rotateX = useSpring(useTransform(mouseY, [0, 1], [15, -15]), { damping: 25, stiffness: 350, mass: 0.3 });
+  const rotateY = useSpring(useTransform(mouseX, [0, 1], [-15, 15]), { damping: 25, stiffness: 350, mass: 0.3 });
 
   const handleMouseMove = (e) => {
     const rect = e.currentTarget.getBoundingClientRect();
@@ -233,17 +233,9 @@ const Hero = () => {
                   rotateY, 
                   transformPerspective: 1200 
                 }}
-                animate={{ 
-                  filter: [
-                    "drop-shadow(0px 0px 20px rgba(255, 180, 50, 0.3))",
-                    "drop-shadow(0px 15px 40px rgba(255, 150, 30, 0.6))",
-                    "drop-shadow(0px 0px 20px rgba(255, 180, 50, 0.3))"
-                  ] 
-                }}
-                transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
               >
                 <img
-                  src="/maharshi-portrait.png"
+                  src="/Maharshi.png"
                   alt="Maharshi Patel - Full-Stack Developer"
                   className="hero-photo w-full h-auto object-contain transition-transform duration-500 hover:scale-[1.03]"
                   loading="eager"

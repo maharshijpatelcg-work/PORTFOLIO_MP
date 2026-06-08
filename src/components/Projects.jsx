@@ -113,15 +113,15 @@ const STACK_SPARKS = [
 ];
 
 const cardSpring = {
-  stiffness: 170,
-  damping: 20,
-  mass: 0.8,
+  stiffness: 280,
+  damping: 24,
+  mass: 0.5,
 };
 
 const pointerSpring = {
-  stiffness: 130,
-  damping: 18,
-  mass: 0.7,
+  stiffness: 220,
+  damping: 22,
+  mass: 0.4,
 };
 
 const getFallbackStackTransform = (index, total) => {
@@ -217,13 +217,13 @@ const ProjectCard = ({
             : {
                 default: {
                   type: 'spring',
-                  stiffness: 118,
-                  damping: 18,
-                  mass: 0.95,
-                  delay: isExpanded ? 0.12 + index * 0.075 : 0,
+                  stiffness: 240,
+                  damping: 22,
+                  mass: 0.55,
+                  delay: isExpanded ? 0.05 + index * 0.04 : 0,
                 },
-                filter: { duration: 0.55, ease: [0.22, 1, 0.36, 1] },
-                opacity: { duration: 0.4, delay: isExpanded ? 0.1 + index * 0.03 : 0 },
+                filter: { duration: 0.3, ease: [0.22, 1, 0.36, 1] },
+                opacity: { duration: 0.25, delay: isExpanded ? 0.04 + index * 0.02 : 0 },
               }
         }
         whileHover={canInteract && !prefersReducedMotion ? { y: -12, scale: 1.015 } : undefined}
@@ -553,6 +553,10 @@ const Projects = () => {
   }, [filteredProjects, activeCategory]);
 
   useLayoutEffect(() => {
+    if (cardsExpanded) {
+      return undefined;
+    }
+
     measureStack();
 
     if (typeof window === 'undefined') {
@@ -578,14 +582,14 @@ const Projects = () => {
       resizeObserver?.disconnect();
       window.removeEventListener('resize', measureStack);
     };
-  }, [measureStack]);
+  }, [measureStack, cardsExpanded]);
 
   useEffect(() => {
     if (prefersReducedMotion || !isInView) {
       return;
     }
 
-    const timer = window.setTimeout(() => setIsExpanded(true), 160);
+    const timer = window.setTimeout(() => setIsExpanded(true), 60);
     return () => window.clearTimeout(timer);
   }, [isInView, prefersReducedMotion]);
 

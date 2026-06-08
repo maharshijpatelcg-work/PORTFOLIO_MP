@@ -24,19 +24,20 @@ const CustomCursor = () => {
     const onMouseMove = (e) => {
       mouseX = e.clientX;
       mouseY = e.clientY;
+      // Instant dot update — no rAF needed for the dot
       const dotScale = isHoveringRef.current ? 1.5 : 1;
-      dot.style.transform = `translate(${mouseX}px, ${mouseY}px) translate(-50%, -50%) scale(${dotScale})`;
+      dot.style.transform = `translate3d(${mouseX}px, ${mouseY}px, 0) translate(-50%, -50%) scale(${dotScale})`;
     };
 
     window.addEventListener('mousemove', onMouseMove, { passive: true });
 
-    // Smooth trailing ring
+    // Smooth trailing ring — faster lerp for snappier follow
     let animFrameId;
     const animate = () => {
-      trailX += (mouseX - trailX) * 0.15;
-      trailY += (mouseY - trailY) * 0.15;
+      trailX += (mouseX - trailX) * 0.28;
+      trailY += (mouseY - trailY) * 0.28;
       const trailScale = isHoveringRef.current ? 1.8 : 1;
-      trail.style.transform = `translate(${trailX}px, ${trailY}px) translate(-50%, -50%) scale(${trailScale})`;
+      trail.style.transform = `translate3d(${trailX}px, ${trailY}px, 0) translate(-50%, -50%) scale(${trailScale})`;
       animFrameId = requestAnimationFrame(animate);
     };
     animate();
@@ -45,25 +46,26 @@ const CustomCursor = () => {
     const onMouseOver = (e) => {
       const target = e.target.closest('a, button, input, textarea, [role="button"]');
       if (target) {
-        target.style.cursor = 'none';
+        if (target.style.cursor !== 'none') {
+          target.style.cursor = 'none';
+        }
         isHoveringRef.current = true;
-      }
-    };
-
-    const onMouseOut = (e) => {
-      const target = e.target.closest('a, button, input, textarea, [role="button"]');
-      if (target) {
+      } else {
         isHoveringRef.current = false;
       }
     };
 
+    const onMouseLeaveDoc = () => {
+      isHoveringRef.current = false;
+    };
+
     document.addEventListener('mouseover', onMouseOver, { passive: true });
-    document.addEventListener('mouseout', onMouseOut, { passive: true });
+    document.addEventListener('mouseleave', onMouseLeaveDoc, { passive: true });
 
     return () => {
       window.removeEventListener('mousemove', onMouseMove);
       document.removeEventListener('mouseover', onMouseOver);
-      document.removeEventListener('mouseout', onMouseOut);
+      document.removeEventListener('mouseleave', onMouseLeaveDoc);
       cancelAnimationFrame(animFrameId);
       document.body.style.cursor = 'auto';
     };
@@ -81,9 +83,10 @@ const CustomCursor = () => {
           borderRadius: '50%',
           background: 'var(--color-accent, #7c3aed)',
           boxShadow: '0 0 12px 4px rgba(124, 58, 237, 0.6), 0 0 24px 8px rgba(124, 58, 237, 0.3)',
-          transition: 'width 0.3s, height 0.3s',
+          transition: 'width 0.2s, height 0.2s',
           willChange: 'transform',
-          transform: 'translate(-100px, -100px) translate(-50%, -50%) scale(1)',
+          contain: 'layout style paint',
+          transform: 'translate3d(-100px, -100px, 0) translate(-50%, -50%) scale(1)',
         }}
       />
 
@@ -96,9 +99,10 @@ const CustomCursor = () => {
           height: '36px',
           borderRadius: '50%',
           border: '1.5px solid var(--color-accent, rgba(124, 58, 237, 0.4))',
-          transition: 'width 0.3s, height 0.3s, border-color 0.3s',
+          transition: 'width 0.2s, height 0.2s, border-color 0.2s',
           willChange: 'transform',
-          transform: 'translate(-100px, -100px) translate(-50%, -50%) scale(1)',
+          contain: 'layout style paint',
+          transform: 'translate3d(-100px, -100px, 0) translate(-50%, -50%) scale(1)',
         }}
       />
     </>,

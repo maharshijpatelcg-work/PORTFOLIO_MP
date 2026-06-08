@@ -614,6 +614,7 @@ textarea:-webkit-autofill {
   transform-origin: top center;
   transform: perspective(900px) rotateX(74deg) translate3d(0, -10%, 0);
   animation: skills-grid-drift 18s linear infinite;
+  will-change: transform;
 }
 
 .skills-danger-vignette {
@@ -627,6 +628,7 @@ textarea:-webkit-autofill {
   height: 1px;
   background: linear-gradient(90deg, transparent, rgba(255, 124, 87, 0.9), rgba(255, 255, 255, 0.85), transparent);
   filter: drop-shadow(0 0 10px rgba(255, 110, 82, 0.7));
+  will-change: transform, opacity;
 }
 
 .skills-danger-text {
@@ -948,6 +950,7 @@ textarea:-webkit-autofill {
   transform-style: preserve-3d;
   animation: cube-rotate 12s ease-in-out infinite;
   transition: transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  will-change: transform;
 }
 
 .skill-cube-scene.is-hovered .skill-cube {
@@ -978,7 +981,7 @@ textarea:-webkit-autofill {
   position: absolute;
   width: 140px;
   height: 140px;
-  backface-visibility: visible;
+  backface-visibility: hidden;
   display: flex;
   align-items: center;
   justify-content: center;

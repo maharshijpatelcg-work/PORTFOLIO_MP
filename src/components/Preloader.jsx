@@ -10,7 +10,7 @@ const Preloader = () => {
     const timer = setTimeout(() => {
       setIsLoading(false);
       document.body.style.overflow = 'auto';
-    }, 3500);
+    }, 2000);
 
     return () => clearTimeout(timer);
   }, []);

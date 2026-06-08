@@ -8,6 +8,7 @@ import CameraAssistant from './components/CameraAssistant';
 import ArcadeHub from './components/ArcadeHub';
 import ThemeSwitcher from './components/ThemeSwitcher';
 import Preloader from './components/Preloader';
+import SectionSlidePanel from './components/SectionSlidePanel';
 import './App.css';
 
 // Lazy load page components
@@ -60,6 +61,7 @@ function App() {
       <div className="fixed inset-0 -z-10 bg-black/40" />
 
       <Navbar />
+      <SectionSlidePanel />
       <ScrollToTop />
 
       <main className="relative z-10">
