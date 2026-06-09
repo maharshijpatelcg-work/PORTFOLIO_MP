@@ -1302,12 +1302,22 @@ footer .fixed.right-6.bottom-6 {
    MOBILE-SPECIFIC GLOBAL FIXES
    ═══════════════════════════════════════════════════════ */
 
-/* Touch devices — disable custom cursor */
+/* Desktop — hide native cursor globally (custom cursor replaces it) */
+@media (pointer: fine) {
+  *,
+  *::before,
+  *::after {
+    cursor: none !important;
+  }
+}
+
+/* Touch devices — restore native cursor */
 @media (pointer: coarse) {
   * {
     cursor: auto !important;
   }
 }
+
 
 /* Prevent iOS text resize on landscape */
 @media screen and (max-width: 1024px) {

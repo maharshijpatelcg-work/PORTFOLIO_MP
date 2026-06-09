@@ -1,113 +1,254 @@
-import React, { useEffect, useRef } from 'react';
-import { createPortal } from 'react-dom';
+import React, { useEffect, useRef, useCallback } from 'react';
 
-const CustomCursor = () => {
+/**
+ * CustomCursor — Premium cursor:
+ *   • White dot (mix-blend-mode: difference) follows instantly
+ *   • A full-border frame that covers the entire element border on hover
+ *   • Bold 2.5px white border with matching border-radius
+ *   • Smooth lerp animation between states
+ *   • Only targets preferred interactive elements
+ *   • Desktop only (pointer: fine)
+ */
+export default function CustomCursor() {
   const dotRef = useRef(null);
-  const trailRef = useRef(null);
-  const isHoveringRef = useRef(false);
+  const frameRef = useRef(null);
+  const rafRef = useRef(null);
+
+  const state = useRef({
+    mouseX: -100,
+    mouseY: -100,
+    // Frame current values (lerped)
+    frameX: -100,
+    frameY: -100,
+    frameW: 36,
+    frameH: 36,
+    // Frame target values
+    targetX: -100,
+    targetY: -100,
+    targetW: 36,
+    targetH: 36,
+    // Rotation
+    rotation: 0,
+    spinning: true,
+    // Border-radius (all four corners)
+    br: [0, 0, 0, 0],
+    targetBr: [0, 0, 0, 0],
+    // Border opacity
+    borderOpacity: 0.45,
+    targetBorderOpacity: 0.45,
+    // Lock state
+    isLocked: false,
+    lastTime: 0,
+  });
+
+  const lerp = useCallback((a, b, t) => a + (b - a) * t, []);
 
   useEffect(() => {
-    // Disable on mobile/touch devices
-    if (window.matchMedia("(pointer: coarse)").matches) return;
+    if (window.matchMedia('(pointer: coarse)').matches) return;
 
-    document.body.style.cursor = 'none';
-
+    const s = state.current;
     const dot = dotRef.current;
-    const trail = trailRef.current;
-    if (!dot || !trail) return;
+    const frame = frameRef.current;
+    if (!dot || !frame) return;
 
-    let mouseX = window.innerWidth / 2;
-    let mouseY = window.innerHeight / 2;
-    let trailX = mouseX;
-    let trailY = mouseY;
-
+    /* ── Mouse tracking ── */
     const onMouseMove = (e) => {
-      mouseX = e.clientX;
-      mouseY = e.clientY;
-      // Instant dot update — no rAF needed for the dot
-      const dotScale = isHoveringRef.current ? 1.5 : 1;
-      dot.style.transform = `translate3d(${mouseX}px, ${mouseY}px, 0) translate(-50%, -50%) scale(${dotScale})`;
+      s.mouseX = e.clientX;
+      s.mouseY = e.clientY;
     };
 
-    window.addEventListener('mousemove', onMouseMove, { passive: true });
+    /* ── Only preferred interactive elements ── */
+    const SELECTOR = [
+      'a',
+      'button',
+      '[role="button"]',
+      '.glass-card',
+      '.glass',
+      '.skill-cube-wrapper',
+      '.hover-lift',
+      '.magnetic-btn',
+      '.skills-filter-button',
+      '.social-link',
+      '.nav-link',
+      '.rounded-full.glass',
+    ].join(', ');
 
-    // Smooth trailing ring — faster lerp for snappier follow
-    let animFrameId;
-    const animate = () => {
-      trailX += (mouseX - trailX) * 0.28;
-      trailY += (mouseY - trailY) * 0.28;
-      const trailScale = isHoveringRef.current ? 1.8 : 1;
-      trail.style.transform = `translate3d(${trailX}px, ${trailY}px, 0) translate(-50%, -50%) scale(${trailScale})`;
-      animFrameId = requestAnimationFrame(animate);
+    let lockedEl = null;
+
+    /* ── Parse per-corner border-radius ── */
+    function parseBorderRadius(el) {
+      const cs = window.getComputedStyle(el);
+      const tl = parseFloat(cs.borderTopLeftRadius) || 0;
+      const tr = parseFloat(cs.borderTopRightRadius) || 0;
+      const br = parseFloat(cs.borderBottomRightRadius) || 0;
+      const bl = parseFloat(cs.borderBottomLeftRadius) || 0;
+      return [tl, tr, br, bl];
+    }
+
+    /* ── Lock to element — full border cover ── */
+    function lockTo(el) {
+      if (!el) return;
+      lockedEl = el;
+      updateLock();
+    }
+
+    function updateLock() {
+      if (!lockedEl) return;
+      const rect = lockedEl.getBoundingClientRect();
+
+      s.isLocked = true;
+      s.spinning = false;
+
+      // Sit exactly on the element border with a tiny 2px padding for visual clarity
+      const pad = 2;
+      s.targetX = rect.left + rect.width / 2;
+      s.targetY = rect.top + rect.height / 2;
+      s.targetW = rect.width + pad * 2;
+      s.targetH = rect.height + pad * 2;
+
+      // Match exact border-radius of the element (plus padding offset)
+      const radii = parseBorderRadius(lockedEl);
+      s.targetBr = radii.map((r) => r + pad);
+
+      // Full opacity when locked
+      s.targetBorderOpacity = 0.92;
+    }
+
+    function unlock() {
+      lockedEl = null;
+      s.isLocked = false;
+      s.spinning = true;
+      s.targetW = 36;
+      s.targetH = 36;
+      s.targetBr = [0, 0, 0, 0];
+      s.targetBorderOpacity = 0.45;
+    }
+
+    /* ── Event delegation ── */
+    const onPointerOver = (e) => {
+      const hit = e.target.closest(SELECTOR);
+      if (hit && hit !== lockedEl) lockTo(hit);
     };
-    animate();
 
-    // Attach hover listeners to interactive elements
-    const onMouseOver = (e) => {
-      const target = e.target.closest('a, button, input, textarea, [role="button"]');
-      if (target) {
-        if (target.style.cursor !== 'none') {
-          target.style.cursor = 'none';
-        }
-        isHoveringRef.current = true;
-      } else {
-        isHoveringRef.current = false;
+    const onPointerOut = (e) => {
+      if (!lockedEl) return;
+      const related = e.relatedTarget;
+      if (!related || !lockedEl.contains(related)) unlock();
+    };
+
+    const onScroll = () => {
+      if (lockedEl) updateLock();
+    };
+
+    /* ── Animation loop ── */
+    function animate(ts) {
+      if (!s.lastTime) s.lastTime = ts;
+      const dt = ts - s.lastTime;
+      s.lastTime = ts;
+
+      // Dot — instant follow
+      dot.style.transform = `translate3d(${s.mouseX - 5}px, ${s.mouseY - 5}px, 0)`;
+
+      // Frame position lerp
+      const speed = s.isLocked ? 0.15 : 0.12;
+      const tx = s.isLocked ? s.targetX : s.mouseX;
+      const ty = s.isLocked ? s.targetY : s.mouseY;
+      s.frameX = lerp(s.frameX, tx, speed);
+      s.frameY = lerp(s.frameY, ty, speed);
+
+      // Frame size lerp
+      s.frameW = lerp(s.frameW, s.targetW, 0.1);
+      s.frameH = lerp(s.frameH, s.targetH, 0.1);
+
+      // Border-radius lerp (per corner)
+      for (let i = 0; i < 4; i++) {
+        s.br[i] = lerp(s.br[i], s.targetBr[i], 0.1);
       }
-    };
 
-    const onMouseLeaveDoc = () => {
-      isHoveringRef.current = false;
-    };
+      // Border opacity lerp
+      s.borderOpacity = lerp(s.borderOpacity, s.targetBorderOpacity, 0.12);
 
-    document.addEventListener('mouseover', onMouseOver, { passive: true });
-    document.addEventListener('mouseleave', onMouseLeaveDoc, { passive: true });
+      // Rotation
+      if (s.spinning) {
+        s.rotation += (dt / 1000) * 90;
+        if (s.rotation > 360) s.rotation -= 360;
+      } else {
+        // Smoothly snap to 0 when locked
+        let diff = -s.rotation;
+        while (diff > 180) diff -= 360;
+        while (diff < -180) diff += 360;
+        s.rotation += diff * 0.1;
+      }
+
+      // Apply transforms to frame
+      const hw = s.frameW / 2;
+      const hh = s.frameH / 2;
+      const [rTL, rTR, rBR, rBL] = s.br;
+
+      frame.style.transform = `translate3d(${s.frameX - hw}px, ${s.frameY - hh}px, 0) rotate(${s.rotation}deg)`;
+      frame.style.width = `${s.frameW}px`;
+      frame.style.height = `${s.frameH}px`;
+      frame.style.borderRadius = `${rTL}px ${rTR}px ${rBR}px ${rBL}px`;
+      frame.style.borderColor = `rgba(255, 255, 255, ${s.borderOpacity})`;
+
+      rafRef.current = requestAnimationFrame(animate);
+    }
+
+    /* ── Listeners ── */
+    document.addEventListener('mousemove', onMouseMove, { passive: true });
+    document.addEventListener('mouseover', onPointerOver, { passive: true });
+    document.addEventListener('mouseout', onPointerOut, { passive: true });
+    window.addEventListener('scroll', onScroll, { passive: true });
+
+    rafRef.current = requestAnimationFrame(animate);
 
     return () => {
-      window.removeEventListener('mousemove', onMouseMove);
-      document.removeEventListener('mouseover', onMouseOver);
-      document.removeEventListener('mouseleave', onMouseLeaveDoc);
-      cancelAnimationFrame(animFrameId);
-      document.body.style.cursor = 'auto';
+      document.removeEventListener('mousemove', onMouseMove);
+      document.removeEventListener('mouseover', onPointerOver);
+      document.removeEventListener('mouseout', onPointerOut);
+      window.removeEventListener('scroll', onScroll);
+      if (rafRef.current) cancelAnimationFrame(rafRef.current);
     };
-  }, []); // Empty dependency array — runs once only
+  }, [lerp]);
 
-  return createPortal(
+  return (
     <>
-      {/* Small glowing dot — follows mouse instantly */}
+      {/* Dot — instant follow cursor */}
       <div
         ref={dotRef}
-        className="fixed top-0 left-0 pointer-events-none z-[9999] hidden md:block"
         style={{
-          width: '8px',
-          height: '8px',
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          width: 10,
+          height: 10,
           borderRadius: '50%',
-          background: 'var(--color-accent, #7c3aed)',
-          boxShadow: '0 0 12px 4px rgba(124, 58, 237, 0.6), 0 0 24px 8px rgba(124, 58, 237, 0.3)',
-          transition: 'width 0.2s, height 0.2s',
+          backgroundColor: '#fff',
+          pointerEvents: 'none',
+          zIndex: 99999,
+          mixBlendMode: 'difference',
           willChange: 'transform',
-          contain: 'layout style paint',
-          transform: 'translate3d(-100px, -100px, 0) translate(-50%, -50%) scale(1)',
         }}
       />
 
-      {/* Trailing ring — follows with smooth lag */}
+      {/* Frame — full border that covers the element edge */}
       <div
-        ref={trailRef}
-        className="fixed top-0 left-0 pointer-events-none z-[9998] hidden md:block"
+        ref={frameRef}
         style={{
-          width: '36px',
-          height: '36px',
-          borderRadius: '50%',
-          border: '1.5px solid var(--color-accent, rgba(124, 58, 237, 0.4))',
-          transition: 'width 0.2s, height 0.2s, border-color 0.2s',
-          willChange: 'transform',
-          contain: 'layout style paint',
-          transform: 'translate3d(-100px, -100px, 0) translate(-50%, -50%) scale(1)',
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          width: 36,
+          height: 36,
+          pointerEvents: 'none',
+          zIndex: 99998,
+          border: '2.5px solid rgba(255, 255, 255, 0.45)',
+          borderRadius: '0px',
+          willChange: 'transform, width, height, border-radius, border-color',
+          transition: 'none',
+          boxSizing: 'border-box',
         }}
       />
-    </>,
-    document.body
+    </>
   );
-};
-
-export default CustomCursor;
+}
