@@ -550,7 +550,7 @@ const Projects = () => {
         };
       })
     );
-  }, [filteredProjects, activeCategory]);
+  }, [filteredProjects]);
 
   useLayoutEffect(() => {
     if (cardsExpanded) {

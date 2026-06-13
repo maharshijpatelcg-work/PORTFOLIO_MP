@@ -117,7 +117,7 @@ const LudoGame = () => {
       if (nextPos <= 50) {
         const myGlobalPos = (nextPos + START_OFFSETS[turn]) % 52;
         if (!SAFE_SPOTS.includes(myGlobalPos)) {
-           newTokens.forEach((other, j) => {
+           newTokens.forEach((other) => {
              if (other.color !== turn && other.pos >= 0 && other.pos <= 50) {
                const otherGlobalPos = (other.pos + START_OFFSETS[other.color]) % 52;
                if (myGlobalPos === otherGlobalPos) {
@@ -194,7 +194,7 @@ const LudoGame = () => {
               <div className="col-start-10 col-end-16 row-start-10 row-end-16 border-[3px] rounded-xl flex items-center justify-center bg-[#3b82f633] shadow-[inset_0_0_20px_#3b82f666]" style={{ borderColor: COLORS.blue }} />
               
               {/* Token Mappings */}
-              {tokens.map((tk, idx) => {
+              {tokens.map((tk) => {
                  let posInBase = 0;
                  if (tk.pos === -1) {
                    const baseGroup = tokens.filter(t => t.color === tk.color && t.pos === -1);

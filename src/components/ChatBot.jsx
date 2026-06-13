@@ -126,7 +126,7 @@ const ChatBot = () => {
 
   return (
     <>
-      <div className="fixed bottom-6 right-6 z-[100] flex flex-col items-end">
+      <div className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-[100] flex flex-col items-end" style={{ maxWidth: 'calc(100vw - 2rem)' }}>
         <AnimatePresence>
           {isOpen && (
             <motion.div
@@ -134,7 +134,7 @@ const ChatBot = () => {
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: 20, scale: 0.9 }}
               transition={{ type: 'spring', bounce: 0.3, duration: 0.6 }}
-              className="mb-4 w-[320px] sm:w-[380px] overflow-hidden rounded-2xl border border-white/10 bg-black/80 backdrop-blur-xl shadow-2xl origin-bottom-right flex flex-col"
+              className="mb-4 w-[calc(100vw-2rem)] sm:w-[380px] max-w-[380px] overflow-hidden rounded-2xl border border-white/10 bg-black/80 backdrop-blur-xl shadow-2xl origin-bottom-right flex flex-col max-h-[80vh] sm:max-h-[85vh]"
               style={{ boxShadow: '0 20px 40px -15px rgba(139, 92, 246, 0.3)' }}
             >
               {/* Header */}
@@ -174,7 +174,7 @@ const ChatBot = () => {
               </div>
 
               {/* Chat Area */}
-              <div className="h-[350px] overflow-y-auto p-4 flex flex-col gap-4 scrollbar-thin scrollbar-thumb-white/10">
+              <div className="h-[min(350px,50vh)] overflow-y-auto p-4 flex flex-col gap-4 scrollbar-thin scrollbar-thumb-white/10">
                 {messages.map((msg, idx) => (
                   <motion.div
                     key={idx}

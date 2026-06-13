@@ -69,7 +69,7 @@ const Navbar = () => {
     };
   }, [isHomePage]);
 
-  const handleNavClick = (event, link) => {
+  const handleNavClick = () => {
     // Rely on React Router's native <Link> for true page navigation
     setMobileOpen(false);
   };
@@ -110,7 +110,7 @@ const Navbar = () => {
               >
                 <Link
                   to={link.href}
-                  onClick={(event) => handleNavClick(event, link)}
+                  onClick={handleNavClick}
                   className={`relative flex h-11 w-11 items-center justify-center rounded-xl transition-all duration-300 ${
                     isActive ? 'text-white' : 'text-gray-500 hover:text-gray-300'
                   }`}
@@ -231,7 +231,7 @@ const Navbar = () => {
                     >
                       <Link
                         to={link.href}
-                        onClick={(event) => handleNavClick(event, link)}
+                        onClick={handleNavClick}
                         className={`flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium transition-all ${
                           isActive
                             ? 'bg-white/10 text-white'

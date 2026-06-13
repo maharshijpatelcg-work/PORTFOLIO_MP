@@ -192,16 +192,22 @@ const ThemeSwitcher = () => {
         if (parsed.type === 'preset') {
           const preset = PRESETS.find(p => p.id === parsed.id);
           if (preset) {
-             applyTheme(preset.colors);
-             setActiveThemeId(preset.id);
+            applyTheme(preset.colors);
+            setTimeout(() => {
+              setActiveThemeId(preset.id);
+            }, 0);
           }
         } else if (parsed.type === 'custom') {
-           setActiveThemeId('custom');
-           setCustomAccent(parsed.colors.accent);
-           setCustomNeon(parsed.colors.neonCyan);
-           applyTheme(parsed.colors);
+          applyTheme(parsed.colors);
+          setTimeout(() => {
+            setCustomAccent(parsed.colors.accent);
+            setCustomNeon(parsed.colors.neonCyan);
+            setActiveThemeId('custom');
+          }, 0);
         }
-      } catch(e) {}
+      } catch {
+        // Ignored
+      }
     }
   }, []);
 
@@ -209,11 +215,11 @@ const ThemeSwitcher = () => {
     <>
       <button 
         onClick={() => setIsOpen(true)}
-        className="fixed right-6 md:right-10 top-[104px] z-[90] flex items-center justify-center w-14 h-14 bg-black/80 backdrop-blur-md border border-white/20 rounded-full shadow-[0_0_20px_rgba(255,255,255,0.1)] text-white hover:scale-105 transition-all duration-300 group"
+        className="fixed right-4 sm:right-6 md:right-10 top-[72px] md:top-[104px] z-[90] flex items-center justify-center w-12 h-12 sm:w-14 sm:h-14 bg-black/80 backdrop-blur-md border border-white/20 rounded-full shadow-[0_0_20px_rgba(255,255,255,0.1)] text-white hover:scale-105 transition-all duration-300 group"
       >
         <FiDroplet size={20} className="animate-pulse" style={{ color: 'var(--color-accent)' }} />
         
-        <span className="absolute right-[70px] bg-black/90 font-mono text-xs px-2 py-1 rounded text-gray-300 opacity-0 group-hover:opacity-100 transition-opacity border border-white/10 pointer-events-none whitespace-nowrap">
+        <span className="absolute right-[70px] bg-black/90 font-mono text-xs px-2 py-1 rounded text-gray-300 opacity-0 group-hover:opacity-100 transition-opacity border border-white/10 pointer-events-none whitespace-nowrap hidden sm:block">
           Colors
         </span>
       </button>
@@ -234,7 +240,8 @@ const ThemeSwitcher = () => {
               animate={{ x: 0, opacity: 1 }}
               exit={{ x: 400, opacity: 0 }}
               transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-              className="fixed right-0 top-0 bottom-0 z-[150] w-[320px] sm:w-[380px] bg-black/90 border-l border-white/10 shadow-[-20px_0_50px_rgba(0,0,0,0.5)] flex flex-col p-6 overflow-y-auto"
+              className="fixed right-0 top-0 bottom-0 z-[150] w-full max-w-[320px] sm:max-w-[380px] bg-black/90 border-l border-white/10 shadow-[-20px_0_50px_rgba(0,0,0,0.5)] flex flex-col p-4 sm:p-6 overflow-y-auto"
+              style={{ paddingBottom: 'max(1.5rem, env(safe-area-inset-bottom, 1.5rem))' }}
             >
               <div className="flex items-center justify-between mb-8 pb-4 border-b border-white/10">
                 <h3 className="font-display text-xl font-bold italic tracking-wider text-white flex items-center gap-2">

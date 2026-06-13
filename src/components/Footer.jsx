@@ -115,7 +115,8 @@ const Footer = () => {
         onClick={scrollToTop}
         whileHover={{ y: -3 }}
         whileTap={{ scale: 0.95 }}
-        className="fixed bottom-6 right-6 z-40 rounded-full bg-gradient-to-r from-accent to-neon-cyan p-3 text-white shadow-glow-md magnetic-btn"
+        className="fixed bottom-20 right-4 sm:bottom-6 sm:right-6 z-40 rounded-full bg-gradient-to-r from-accent to-neon-cyan p-3 text-white shadow-glow-md magnetic-btn"
+        style={{ marginBottom: 'env(safe-area-inset-bottom, 0)' }}
       >
         <FiArrowUp size={20} />
       </motion.button>

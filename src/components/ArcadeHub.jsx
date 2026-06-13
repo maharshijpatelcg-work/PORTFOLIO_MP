@@ -24,12 +24,12 @@ const ArcadeHub = () => {
   return (
     <>
       {/* Anchor Trigger Button in Top Right */}
-      <div className="fixed top-6 right-6 md:right-10 z-[110]">
+      <div className="fixed top-[72px] left-4 md:top-6 md:left-auto md:right-10 z-[110]">
         <motion.button
           onClick={handleOpen}
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
-          className="group relative flex h-14 w-14 items-center justify-center rounded-full bg-gradient-to-br from-gray-900 to-black border border-white/20 text-white shadow-[0_0_20px_rgba(255,255,255,0.05)] transition-shadow hover:shadow-[0_0_30px_rgba(255,255,255,0.2)]"
+          className="group relative flex h-12 w-12 sm:h-14 sm:w-14 items-center justify-center rounded-full bg-gradient-to-br from-gray-900 to-black border border-white/20 text-white shadow-[0_0_20px_rgba(255,255,255,0.05)] transition-shadow hover:shadow-[0_0_30px_rgba(255,255,255,0.2)]"
         >
           <div className="relative flex items-center justify-center">
             <span className="font-display font-black text-xl italic tracking-tighter text-gray-300 transition-colors group-hover:text-white">MP</span>

@@ -109,7 +109,9 @@ const CameraAssistant = () => {
       gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.1);
       osc.connect(gain); gain.connect(ctx.destination);
       osc.start(); osc.stop(ctx.currentTime + 0.1);
-    } catch(e) {}
+    } catch {
+      // Ignored
+    }
   };
 
   const loadMediaPipe = async () => {
@@ -364,12 +366,12 @@ const CameraAssistant = () => {
 
       {/* Persistent Dock Button */}
       {!isCameraActive && (
-        <div className="fixed bottom-[168px] right-4 md:right-6 z-[80] flex flex-col items-end">
+         <div className="fixed bottom-[168px] right-4 sm:right-6 z-[80] flex flex-col items-end" style={{ marginBottom: 'env(safe-area-inset-bottom, 0)' }}>
           <motion.button
             onClick={toggleCamera}
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
-            className="group relative flex h-14 w-14 items-center justify-center rounded-full bg-gradient-to-br from-gray-900 to-black border border-white/10 text-white shadow-[0_0_20px_rgba(255,255,255,0.05)] transition-shadow hover:shadow-[0_0_30px_rgba(255,255,255,0.2)]"
+            className="group relative flex h-12 w-12 sm:h-14 sm:w-14 items-center justify-center rounded-full bg-gradient-to-br from-gray-900 to-black border border-white/10 text-white shadow-[0_0_20px_rgba(255,255,255,0.05)] transition-shadow hover:shadow-[0_0_30px_rgba(255,255,255,0.2)]"
           >
             <div className="relative flex items-center justify-center">
               <span className="font-display font-black text-xl italic tracking-tighter text-gray-300 transition-colors group-hover:text-white">MP</span>

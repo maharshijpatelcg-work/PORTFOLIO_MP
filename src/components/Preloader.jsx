@@ -1,70 +1,218 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
+/**
+ * Preloader — Cinematic Sequential MP Logo and Name reveal:
+ *   Phase 1 (0–1.7s):   Logo reveals in the exact center of screen with glowing shockwaves and spring animations.
+ *   Phase 2 (1.7–2.8s): Logo slides up & shrinks, name "MAHARSHI PATEL" enters letter-by-letter with a blur & spring transition.
+ *   Phase 3 (2.8–4.0s): Progress bar fades in and fills up dynamically.
+ *   Exit (4.0s+):       Entire overlay slides up with elegant easing.
+ */
 const Preloader = () => {
   const [isLoading, setIsLoading] = useState(true);
-  const [stage, setStage] = useState('brand');
+  const [progress, setProgress] = useState(0);
+  const [logoPhase, setLogoPhase] = useState('reveal');
+  const [showText, setShowText] = useState(false);
+  const [visibleLetters, setVisibleLetters] = useState(0);
+  const [showBar, setShowBar] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+  const canvasRef = useRef(null);
+
+  const fullName = 'MAHARSHI PATEL';
+  const firstName = 'MAHARSHI';
+  const lastName = 'PATEL';
+
+  // Check mobile viewport size
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 640);
+    };
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   useEffect(() => {
-    // Lock document scroll on load
     document.body.style.overflow = 'hidden';
 
-    const t1 = setTimeout(() => {
+    // Step 2: Shrink logo and start typing name
+    const shrinkTimer = setTimeout(() => {
+      setLogoPhase('shrink');
+      setShowText(true);
+    }, 1700);
+
+    // Step 3: Show progress bar
+    const barTimer = setTimeout(() => {
+      setShowBar(true);
+    }, 2800);
+
+    // Step 4: Dismiss preloader
+    const exitTimer = setTimeout(() => {
       setIsLoading(false);
       document.body.style.overflow = 'auto';
-    }, 3000);
+    }, 4500);
 
     return () => {
-      clearTimeout(t1);
+      clearTimeout(shrinkTimer);
+      clearTimeout(barTimer);
+      clearTimeout(exitTimer);
+      document.body.style.overflow = 'auto';
     };
   }, []);
 
-  const word1 = "PATEL".split("");
-  const word2 = "MAHARSHI".split("");
+  // Letter-by-letter typing effect
+  useEffect(() => {
+    if (!showText) return;
+    if (visibleLetters >= fullName.length) return;
 
-  const containerVariants = {
-    hidden: { opacity: 0 },
+    const interval = setInterval(() => {
+      setVisibleLetters((prev) => {
+        if (prev >= fullName.length) {
+          clearInterval(interval);
+          return prev;
+        }
+        return prev + 1;
+      });
+    }, 65);
+
+    return () => clearInterval(interval);
+  }, [showText, visibleLetters, fullName.length]);
+
+  // Progress bar animation
+  useEffect(() => {
+    if (!showBar) return;
+
+    const start = performance.now();
+    const duration = 1200;
+    let raf;
+
+    const tick = (now) => {
+      const elapsed = now - start;
+      const pct = Math.min(elapsed / duration, 1);
+      const eased = 1 - Math.pow(1 - pct, 3); // Ease out cubic
+      setProgress(eased * 100);
+      if (pct < 1) raf = requestAnimationFrame(tick);
+    };
+
+    raf = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf);
+  }, [showBar]);
+
+  // Ambient floating particles on canvas
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    let animId;
+    let particles = [];
+
+    const resize = () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    };
+    resize();
+    window.addEventListener('resize', resize);
+
+    // Spawn particles
+    for (let i = 0; i < 40; i++) {
+      particles.push({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        r: Math.random() * 1.8 + 0.4,
+        vx: (Math.random() - 0.5) * 0.3,
+        vy: (Math.random() - 0.5) * 0.3,
+        alpha: Math.random() * 0.35 + 0.05,
+      });
+    }
+
+    const draw = () => {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      for (const p of particles) {
+        p.x += p.vx;
+        p.y += p.vy;
+        if (p.x < 0) p.x = canvas.width;
+        if (p.x > canvas.width) p.x = 0;
+        if (p.y < 0) p.y = canvas.height;
+        if (p.y > canvas.height) p.y = 0;
+
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(255, 255, 255, ${p.alpha})`;
+        ctx.fill();
+      }
+      animId = requestAnimationFrame(draw);
+    };
+    draw();
+
+    return () => {
+      cancelAnimationFrame(animId);
+      window.removeEventListener('resize', resize);
+    };
+  }, []);
+
+  const letterVariants = {
+    hidden: { opacity: 0, y: 12, filter: 'blur(6px)', scale: 0.75 },
     visible: {
       opacity: 1,
-      transition: { 
-        staggerChildren: 0.12,
-        delayChildren: 0.2
-      }
-    }
-  };
-
-  const childVariants = {
-    hidden: { opacity: 0, scale: 3, y: 60, rotateX: 90 },
-    visible: { 
-      opacity: 1, 
-      scale: 1, 
-      y: 0, 
-      rotateX: 0,
-      transition: { 
-        type: 'spring', 
-        stiffness: 180, 
+      y: 0,
+      filter: 'blur(0px)',
+      scale: 1,
+      transition: {
+        type: 'spring',
         damping: 14,
-        mass: 1.2 
+        stiffness: 140,
       }
     }
   };
 
-  const textVariants = {
-    initial: { opacity: 0, scale: 0.85, y: 30, filter: 'blur(10px)' },
-    animate: { 
-      opacity: 1, 
-      scale: 1, 
-      y: 0, 
-      filter: 'blur(0px)', 
-      transition: { duration: 0.6, ease: [0.16, 1, 0.3, 1] } 
-    },
-    exit: { 
-      opacity: 0, 
-      scale: 1.1, 
-      y: -20, 
-      filter: 'blur(8px)', 
-      transition: { duration: 0.4 } 
-    }
+  // Sizing definitions based on phase & viewport
+  const logoPhaseIsReveal = logoPhase === 'reveal';
+  const scaleFactor = isMobile ? 0.8 : 1.0;
+  const logoSize = (logoPhaseIsReveal ? 240 : 100) * scaleFactor;
+  const clipSize = (logoPhaseIsReveal ? 200 : 82) * scaleFactor;
+  const outerRingSize = (logoPhaseIsReveal ? 300 : 135) * scaleFactor;
+  const innerRingSize = (logoPhaseIsReveal ? 250 : 112) * scaleFactor;
+
+  // Split name for rendering
+  const renderTypedName = () => {
+    return (
+      <div className="preloader-name-row">
+        <span className="preloader-name-first">
+          {firstName.split('').map((ch, i) => (
+            <motion.span
+              key={`f-${i}`}
+              variants={letterVariants}
+              initial="hidden"
+              animate={i < visibleLetters ? 'visible' : 'hidden'}
+              className="preloader-letter"
+            >
+              {ch}
+            </motion.span>
+          ))}
+        </span>
+        <span className="preloader-name-space" />
+        <span className="preloader-name-last">
+          {lastName.split('').map((ch, i) => {
+            const globalIdx = firstName.length + 1 + i; // +1 for space
+            return (
+              <motion.span
+                key={`l-${i}`}
+                variants={letterVariants}
+                initial="hidden"
+                animate={globalIdx < visibleLetters ? 'visible' : 'hidden'}
+                className="preloader-letter preloader-letter-gold"
+              >
+                {ch}
+              </motion.span>
+            );
+          })}
+        </span>
+        {/* Typing cursor */}
+        {visibleLetters < fullName.length && (
+          <span className="preloader-cursor" />
+        )}
+      </div>
+    );
   };
 
   return (
@@ -73,83 +221,137 @@ const Preloader = () => {
         <motion.div
           key="preloader"
           initial={{ y: 0 }}
-          exit={{ 
-            y: '-100vh', 
-            transition: { duration: 1.2, ease: [0.76, 0, 0.24, 1] } 
+          exit={{
+            y: '-100vh',
+            transition: { duration: 1.0, ease: [0.76, 0, 0.24, 1] },
           }}
-          className="fixed inset-0 z-[100000] flex items-center justify-center bg-[#0a0a0a] overflow-hidden"
+          className="preloader-overlay"
         >
-          {/* CINEMATIC BACKGROUND */}
-          <motion.div 
-             initial={{ scale: 1.15, opacity: 0 }}
-             animate={{ scale: 1, opacity: 1 }}
-             transition={{ duration: 2, ease: "easeOut" }}
-             className="absolute inset-0 w-full h-full"
-          >
-             <img 
-                src="/preloader-bg.jpg" 
-                alt="Preloader Background" 
-                className="w-full h-full object-cover brightness-[0.35] blur-[4px] grayscale-[15%]"
-             />
-             <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/60" />
-             <div className="absolute inset-0 bg-gradient-to-r from-black/40 via-transparent to-black/40" />
-          </motion.div>
+          {/* Ambient particle canvas */}
+          <canvas ref={canvasRef} className="preloader-canvas" />
 
-          {/* INNER CONTENT WRAPPER */}
-          <div className="relative z-10 w-full flex flex-col items-center justify-center min-h-[300px]">
-            <AnimatePresence mode="wait">
-              {stage === 'brand' && (
-                <motion.div
-                  key="brand-stage"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                  className="flex flex-col items-center justify-center"
-                >
-                  <motion.div 
-                     variants={containerVariants}
-                     initial="hidden"
-                     animate="visible"
-                     className="relative z-10 flex flex-col md:flex-row items-center justify-center gap-2 md:gap-5 px-4"
-                  >
-                    {/* PATEL — Gold gradient */}
-                    <div className="flex">
-                      {word1.map((letter, i) => (
-                        <motion.span 
-                          variants={childVariants} 
-                          key={`w1-${i}`}
-                          className="font-display font-black text-4xl sm:text-5xl md:text-6xl lg:text-7xl tracking-tight"
-                          style={{
-                            background: 'linear-gradient(180deg, #fde047 0%, #d97706 100%)',
-                            WebkitBackgroundClip: 'text',
-                            WebkitTextFillColor: 'transparent',
-                            textShadow: '0px 0px 40px rgba(234, 179, 8, 0.4)'
-                          }}
-                        >
-                          {letter}
-                        </motion.span>
-                      ))}
-                    </div>
+          {/* Radial ambient glow behind logo */}
+          <motion.div
+            className="preloader-ambient-glow"
+            initial={{ opacity: 0, scale: 0.5 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 2, ease: 'easeOut' }}
+          />
 
-                    {/* MAHARSHI — Pure white */}
-                    <div className="flex">
-                      {word2.map((letter, i) => (
-                        <motion.span 
-                          variants={childVariants} 
-                          key={`w2-${i}`}
-                          className="font-display font-black text-4xl sm:text-5xl md:text-6xl lg:text-7xl tracking-tight text-white"
-                          style={{
-                            textShadow: '0px 0px 30px rgba(255, 255, 255, 0.3)'
-                          }}
-                        >
-                          {letter}
-                        </motion.span>
-                      ))}
-                    </div>
-                  </motion.div>
-                </motion.div>
+          {/* CENTER CONTENT */}
+          <div className="preloader-center">
+            {/* ── LOGO ── */}
+            <motion.div
+              layout
+              className="preloader-logo-wrapper"
+              style={{
+                width: logoSize,
+                height: logoSize,
+              }}
+              transition={{
+                type: 'spring',
+                damping: 24,
+                stiffness: 110,
+              }}
+            >
+              {/* Expanding Shockwaves on Initial Reveal */}
+              {logoPhaseIsReveal && (
+                <>
+                  <motion.div
+                    className="absolute rounded-full border-2 border-accent/40"
+                    initial={{ width: 60, height: 60, opacity: 0.8, scale: 0.5 }}
+                    animate={{ width: 380, height: 380, opacity: 0, scale: 1.6 }}
+                    transition={{ duration: 1.3, ease: 'easeOut', delay: 0.35 }}
+                    style={{ position: 'absolute' }}
+                  />
+                  <motion.div
+                    className="absolute rounded-full border border-neon-cyan/35"
+                    initial={{ width: 60, height: 60, opacity: 0.8, scale: 0.5 }}
+                    animate={{ width: 320, height: 320, opacity: 0, scale: 1.4 }}
+                    transition={{ duration: 1.5, ease: 'easeOut', delay: 0.55 }}
+                    style={{ position: 'absolute' }}
+                  />
+                </>
               )}
-            </AnimatePresence>
+
+              {/* Outer glow ring */}
+              <motion.div
+                layout
+                className="preloader-glow-ring preloader-glow-ring-outer"
+                style={{ width: outerRingSize, height: outerRingSize }}
+                transition={{ type: 'spring', damping: 24, stiffness: 110 }}
+              />
+              {/* Inner glow ring */}
+              <motion.div
+                layout
+                className="preloader-glow-ring preloader-glow-ring-inner"
+                style={{ width: innerRingSize, height: innerRingSize }}
+                transition={{ type: 'spring', damping: 24, stiffness: 110 }}
+              />
+
+              {/* Logo image with clip-path reveal */}
+              <motion.div
+                layout
+                className="preloader-logo-clip"
+                initial={{ clipPath: 'circle(0% at 50% 50%)' }}
+                animate={{ clipPath: 'circle(100% at 50% 50%)' }}
+                style={{ width: clipSize, height: clipSize, borderRadius: '50%' }}
+                transition={{
+                  duration: 1.2,
+                  ease: [0.16, 1, 0.3, 1],
+                  delay: 0.2,
+                }}
+              >
+                <img
+                  src="/LOGO.png"
+                  alt="MP Logo"
+                  className="preloader-logo-img"
+                  draggable={false}
+                />
+              </motion.div>
+
+              {/* Shimmer sweep across logo */}
+              <motion.div
+                className="preloader-shimmer"
+                initial={{ x: '-120%' }}
+                animate={{ x: '120%' }}
+                transition={{
+                  duration: 1.0,
+                  ease: 'easeInOut',
+                  delay: 1.0,
+                }}
+              />
+            </motion.div>
+
+            {/* ── NAME ── */}
+            <motion.div
+              className="preloader-name-container"
+              initial={{ opacity: 0, y: 16 }}
+              animate={showText ? { opacity: 1, y: 0 } : { opacity: 0, y: 16 }}
+              transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+            >
+              {renderTypedName()}
+            </motion.div>
+
+            {/* ── PROGRESS BAR ── */}
+            <motion.div
+              className="preloader-bar-container"
+              initial={{ opacity: 0, scaleX: 0.6 }}
+              animate={showBar ? { opacity: 1, scaleX: 1 } : { opacity: 0, scaleX: 0.6 }}
+              transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+            >
+              <div className="preloader-bar-track">
+                <div
+                  className="preloader-bar-fill"
+                  style={{ width: `${progress}%` }}
+                />
+                <div
+                  className="preloader-bar-glow"
+                  style={{ left: `${progress}%` }}
+                />
+              </div>
+              <span className="preloader-bar-pct">{Math.round(progress)}%</span>
+            </motion.div>
           </div>
         </motion.div>
       )}

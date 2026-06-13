@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { FiMic } from 'react-icons/fi';
@@ -25,53 +25,11 @@ const VoiceAssistant = () => {
 
   const isRoutingRef = useRef(false);
 
-  useEffect(() => {
-    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-    if (SpeechRecognition) {
-      const recognition = new SpeechRecognition();
-      recognition.continuous = true; // Keep listening continuously until we explicitly stop it
-      recognition.interimResults = true; // Capture LIVE streaming audio bits instantly
-      recognition.lang = 'en-US';
-
-      recognition.onstart = () => {
-        setIsListening(true);
-        isRoutingRef.current = false;
-      };
-      
-      recognition.onresult = (event) => {
-        if (isRoutingRef.current) return; // Prevent double trigger
-        
-        let transcript = '';
-        for (let i = event.resultIndex; i < event.results.length; i++) {
-          transcript += event.results[i][0].transcript.toLowerCase();
-        }
-        
-        if (transcript.trim()) {
-           handleCommand(transcript, recognition);
-        }
-      };
-
-      recognition.onerror = (event) => {
-        if (!isRoutingRef.current) {
-          setIsListening(false);
-          setToastMessage('Voice processing ended or an issue occurred.');
-          clearToast();
-        }
-      };
-
-      recognition.onend = () => {
-        setIsListening(false);
-      };
-
-      recognitionRef.current = recognition;
-    }
-  }, [navigate]);
-
-  const clearToast = () => {
+  const clearToast = useCallback(() => {
     setTimeout(() => setToastMessage(null), 4000);
-  };
+  }, []);
 
-  const speakOutput = (text) => {
+  const speakOutput = useCallback((text) => {
     if ('speechSynthesis' in window) {
       window.speechSynthesis.cancel(); // Clears out lingering speech commands
       const utterance = new SpeechSynthesisUtterance(text);
@@ -79,9 +37,9 @@ const VoiceAssistant = () => {
       utterance.rate = 1.05; // Slightly faster pacing
       window.speechSynthesis.speak(utterance);
     }
-  };
+  }, []);
 
-  const handleCommand = (transcript, recognitionInstance) => {
+  const handleCommand = useCallback((transcript, recognitionInstance) => {
     setToastMessage(`Hearing: "${transcript}..."`);
     
     // Check for reload command first
@@ -113,7 +71,49 @@ const VoiceAssistant = () => {
         return; // Terminate scan
       }
     }
-  };
+  }, [navigate, speakOutput, clearToast]);
+
+  useEffect(() => {
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (SpeechRecognition) {
+      const recognition = new SpeechRecognition();
+      recognition.continuous = true; // Keep listening continuously until we explicitly stop it
+      recognition.interimResults = true; // Capture LIVE streaming audio bits instantly
+      recognition.lang = 'en-US';
+
+      recognition.onstart = () => {
+        setIsListening(true);
+        isRoutingRef.current = false;
+      };
+      
+      recognition.onresult = (event) => {
+        if (isRoutingRef.current) return; // Prevent double trigger
+        
+        let transcript = '';
+        for (let i = event.resultIndex; i < event.results.length; i++) {
+          transcript += event.results[i][0].transcript.toLowerCase();
+        }
+        
+        if (transcript.trim()) {
+           handleCommand(transcript, recognition);
+        }
+      };
+
+      recognition.onerror = () => {
+        if (!isRoutingRef.current) {
+          setIsListening(false);
+          setToastMessage('Voice processing ended or an issue occurred.');
+          clearToast();
+        }
+      };
+
+      recognition.onend = () => {
+        setIsListening(false);
+      };
+
+      recognitionRef.current = recognition;
+    }
+  }, [handleCommand, clearToast]);
 
   const toggleListening = () => {
     if (!recognitionRef.current) {
@@ -131,7 +131,7 @@ const VoiceAssistant = () => {
   };
 
   return (
-    <div className="fixed bottom-[96px] right-4 md:right-6 z-[90] flex items-end justify-end">
+    <div className="fixed bottom-[96px] right-4 sm:right-6 z-[90] flex items-end justify-end" style={{ marginBottom: 'env(safe-area-inset-bottom, 0)' }}>
       {/* Toast Notification Container */}
       <AnimatePresence>
         {toastMessage && (
@@ -159,7 +159,7 @@ const VoiceAssistant = () => {
         onClick={toggleListening}
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
-        className="group relative flex h-14 w-14 items-center justify-center rounded-full bg-gradient-to-br from-gray-900 to-black border border-white/10 text-white shadow-[0_0_20px_rgba(255,255,255,0.05)] transition-shadow hover:shadow-[0_0_30px_rgba(255,255,255,0.2)]"
+        className="group relative flex h-12 w-12 sm:h-14 sm:w-14 items-center justify-center rounded-full bg-gradient-to-br from-gray-900 to-black border border-white/10 text-white shadow-[0_0_20px_rgba(255,255,255,0.05)] transition-shadow hover:shadow-[0_0_30px_rgba(255,255,255,0.2)]"
       >
         {isListening ? (
           <div className="relative flex items-center justify-center w-full h-full">

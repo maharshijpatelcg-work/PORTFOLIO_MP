@@ -1,0 +1,1 @@
+import{j as t}from"./index-D-PRpQEg.js";import o from"./Contact-BsSrRE_u.js";import"./index-3Bh6oS3f.js";const m=()=>t.jsx("div",{className:"pt-16 md:pt-0",children:t.jsx(o,{})});export{m as default};

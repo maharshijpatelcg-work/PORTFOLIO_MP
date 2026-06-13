@@ -28,7 +28,7 @@ const ChessGame = () => {
          setBoard(chessObj.board());
          setEngineLoaded(true);
          setStatus("Your Turn (White)");
-       } catch (err) {
+       } catch {
          setStatus("Error loading local engine logic.");
        }
     };
@@ -116,7 +116,7 @@ const ChessGame = () => {
             }
             return;
          }
-       } catch (e) {
+       } catch {
           // Fall back gracefully if move string throws exception
        }
     }
@@ -131,7 +131,9 @@ const ChessGame = () => {
          setSelectedPos(null);
          setPossibleMoves([]);
       }
-    } catch(e) {}
+    } catch {
+      // Ignored
+    }
   };
 
   const resetGame = () => {
