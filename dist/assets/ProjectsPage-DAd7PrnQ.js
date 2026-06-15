@@ -1,0 +1,1 @@
+import{j as t}from"./index-xUNGfjQb.js";import r from"./Projects-Cj-Jc2p3.js";import"./index-CVxvyxOy.js";import"./use-reduced-motion-DFIdb_62.js";import"./use-spring-CFsVSWF_.js";const i=()=>t.jsx("div",{className:"pt-16 md:pt-0",children:t.jsx(r,{})});export{i as default};

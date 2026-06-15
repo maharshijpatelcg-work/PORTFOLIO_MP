@@ -1,10 +1,23 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
+// Stable random starting coordinates calculated outside component render path to satisfy rules of purity
+const INITIAL_LETTER_POSITIONS = Array.from({ length: 14 }, () => {
+  const angle = Math.random() * Math.PI * 2;
+  const distance = 400 + Math.random() * 600; // 400px to 1000px offscreen
+  return {
+    x: Math.cos(angle) * distance,
+    y: Math.sin(angle) * distance,
+    rotate: (Math.random() - 0.5) * 720, // Spin multiple times on entrance
+    scale: Math.random() * 0.5 + 0.2,
+  };
+});
+
 /**
  * Preloader — Cinematic Sequential MP Logo and Name reveal:
  *   Phase 1 (0–1.7s):   Logo reveals in the exact center of screen with glowing shockwaves and spring animations.
- *   Phase 2 (1.7–2.8s): Logo slides up & shrinks, name "MAHARSHI PATEL" enters letter-by-letter with a blur & spring transition.
+ *   Phase 2 (1.7–2.8s): Logo slides up & shrinks, name "MAHARSHI PATEL" enters letter-by-letter,
+ *                       flying in from random positions ("everywhere") and then transitioning into a gentle float.
  *   Phase 3 (2.8–4.0s): Progress bar fades in and fills up dynamically.
  *   Exit (4.0s+):       Entire overlay slides up with elegant easing.
  */
@@ -60,23 +73,27 @@ const Preloader = () => {
     };
   }, []);
 
-  // Letter-by-letter typing effect
+  // Letter-by-letter typing effect (elapsed-time-based to be immune to CPU main-thread lag)
   useEffect(() => {
     if (!showText) return;
-    if (visibleLetters >= fullName.length) return;
 
-    const interval = setInterval(() => {
-      setVisibleLetters((prev) => {
-        if (prev >= fullName.length) {
-          clearInterval(interval);
-          return prev;
-        }
-        return prev + 1;
-      });
-    }, 65);
+    const start = performance.now();
+    const letterDuration = 65; // ms per letter
+    const totalDuration = fullName.length * letterDuration;
+    let raf;
 
-    return () => clearInterval(interval);
-  }, [showText, visibleLetters, fullName.length]);
+    const tick = (now) => {
+      const elapsed = now - start;
+      const count = Math.min(Math.floor(elapsed / letterDuration), fullName.length);
+      setVisibleLetters(count);
+      if (elapsed < totalDuration) {
+        raf = requestAnimationFrame(tick);
+      }
+    };
+
+    raf = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf);
+  }, [showText, fullName.length]);
 
   // Progress bar animation
   useEffect(() => {
@@ -150,17 +167,58 @@ const Preloader = () => {
     };
   }, []);
 
-  const letterVariants = {
-    hidden: { opacity: 0, y: 12, filter: 'blur(6px)', scale: 0.75 },
+  // Fly-in from everywhere variants (First Name: White glow float)
+  const firstLetterVariants = {
+    hidden: (index) => {
+      const pos = INITIAL_LETTER_POSITIONS[index] || { x: 0, y: 0, rotate: 0, scale: 1 };
+      return {
+        opacity: 0,
+        x: pos.x,
+        y: pos.y,
+        rotate: pos.rotate,
+        scale: pos.scale,
+        filter: 'blur(8px)',
+      };
+    },
     visible: {
       opacity: 1,
+      x: 0,
       y: 0,
-      filter: 'blur(0px)',
+      rotate: 0,
       scale: 1,
+      filter: 'blur(0px)',
       transition: {
         type: 'spring',
-        damping: 14,
-        stiffness: 140,
+        damping: 15,
+        stiffness: 90,
+      }
+    }
+  };
+
+  // Fly-in from everywhere variants (Last Name: Gold glow float)
+  const lastLetterVariants = {
+    hidden: (index) => {
+      const pos = INITIAL_LETTER_POSITIONS[index] || { x: 0, y: 0, rotate: 0, scale: 1 };
+      return {
+        opacity: 0,
+        x: pos.x,
+        y: pos.y,
+        rotate: pos.rotate,
+        scale: pos.scale,
+        filter: 'blur(8px)',
+      };
+    },
+    visible: {
+      opacity: 1,
+      x: 0,
+      y: 0,
+      rotate: 0,
+      scale: 1,
+      filter: 'blur(0px)',
+      transition: {
+        type: 'spring',
+        damping: 15,
+        stiffness: 90,
       }
     }
   };
@@ -173,6 +231,21 @@ const Preloader = () => {
   const outerRingSize = (logoPhaseIsReveal ? 300 : 135) * scaleFactor;
   const innerRingSize = (logoPhaseIsReveal ? 250 : 112) * scaleFactor;
 
+  // Dynamic cyber status text based on animation state
+  const getStatusText = () => {
+    if (!showText) return "ESTABLISHING UPLINK...";
+    if (visibleLetters < fullName.length) return "DECODING IDENTITY MATRIX...";
+    if (!showBar) return "AUTHENTICATION COMPLETED...";
+    
+    // Progress-based status messages matching portfolio features
+    if (progress < 15) return "LAUNCHING CORE INTERFACE...";
+    if (progress < 40) return "INITIALIZING INTERACTIVE CANVAS...";
+    if (progress < 65) return "ESTABLISHING PORTFOLIO CONTEXT...";
+    if (progress < 85) return "CONFIGURING FIGMA & LEETCODE APIS...";
+    if (progress < 98) return "INJECTING VOICE & VISION CHANNELS...";
+    return "SYSTEM ACCESS GRANTED";
+  };
+
   // Split name for rendering
   const renderTypedName = () => {
     return (
@@ -181,7 +254,8 @@ const Preloader = () => {
           {firstName.split('').map((ch, i) => (
             <motion.span
               key={`f-${i}`}
-              variants={letterVariants}
+              custom={i}
+              variants={firstLetterVariants}
               initial="hidden"
               animate={i < visibleLetters ? 'visible' : 'hidden'}
               className="preloader-letter"
@@ -197,7 +271,8 @@ const Preloader = () => {
             return (
               <motion.span
                 key={`l-${i}`}
-                variants={letterVariants}
+                custom={globalIdx}
+                variants={lastLetterVariants}
                 initial="hidden"
                 animate={globalIdx < visibleLetters ? 'visible' : 'hidden'}
                 className="preloader-letter preloader-letter-gold"
@@ -327,7 +402,23 @@ const Preloader = () => {
             <motion.div
               className="preloader-name-container"
               initial={{ opacity: 0, y: 16 }}
-              animate={showText ? { opacity: 1, y: 0 } : { opacity: 0, y: 16 }}
+              animate={
+                visibleLetters >= fullName.length
+                  ? {
+                      opacity: 1,
+                      y: [0, -6, 0],
+                      transition: {
+                        y: {
+                          duration: 2.2,
+                          repeat: Infinity,
+                          ease: 'easeInOut',
+                        },
+                      },
+                    }
+                  : showText
+                  ? { opacity: 1, y: 0 }
+                  : { opacity: 0, y: 16 }
+              }
               transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
             >
               {renderTypedName()}
@@ -340,17 +431,31 @@ const Preloader = () => {
               animate={showBar ? { opacity: 1, scaleX: 1 } : { opacity: 0, scaleX: 0.6 }}
               transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
             >
-              <div className="preloader-bar-track">
-                <div
-                  className="preloader-bar-fill"
-                  style={{ width: `${progress}%` }}
-                />
-                <div
-                  className="preloader-bar-glow"
-                  style={{ left: `${progress}%` }}
-                />
+              {/* Dynamic cyber status text */}
+              <div className="preloader-status-text">{getStatusText()}</div>
+
+              <div className="preloader-bar-segments-wrapper">
+                <div className="preloader-bar-track-wrapper">
+
+
+                  <div className="preloader-bar-segments">
+                    {Array.from({ length: 24 }).map((_, idx) => {
+                      const filledSegments = Math.floor((progress / 100) * 24);
+                      const isFilled = idx < filledSegments;
+                      const isLeading = idx === filledSegments - 1 && filledSegments > 0;
+                      return (
+                        <div
+                          key={idx}
+                          className={`preloader-bar-segment ${isFilled ? 'filled' : ''} ${
+                            isLeading ? 'leading' : ''
+                          }`}
+                        />
+                      );
+                    })}
+                  </div>
+                </div>
+                <span className="preloader-bar-pct">{Math.round(progress)}%</span>
               </div>
-              <span className="preloader-bar-pct">{Math.round(progress)}%</span>
             </motion.div>
           </div>
         </motion.div>

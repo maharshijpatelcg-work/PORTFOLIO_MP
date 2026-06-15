@@ -1,0 +1,1 @@
+import{j as t}from"./index-xUNGfjQb.js";import r from"./Skills-C7JaxiQh.js";import"./index-CVxvyxOy.js";import"./use-reduced-motion-DFIdb_62.js";const p=()=>t.jsx("div",{className:"pt-16 md:pt-0",children:t.jsx(r,{})});export{p as default};

@@ -8,6 +8,7 @@ import CameraAssistant from './components/CameraAssistant';
 import ArcadeHub from './components/ArcadeHub';
 import ThemeSwitcher from './components/ThemeSwitcher';
 import Preloader from './components/Preloader';
+import VisitorForm from './components/VisitorForm';
 import SectionSlidePanel from './components/SectionSlidePanel';
 import './App.css';
 
@@ -42,6 +43,23 @@ function ScrollToTop() {
 }
 
 function App() {
+  const [showVisitorForm, setShowVisitorForm] = React.useState(() => {
+    return !localStorage.getItem('portfolio_visitor_details');
+  });
+
+  const handleVisitorSubmit = (details) => {
+    localStorage.setItem('portfolio_visitor_details', JSON.stringify(details));
+    setShowVisitorForm(false);
+  };
+
+  if (showVisitorForm) {
+    return (
+      <div className="app min-h-screen bg-[#050508] text-white relative overflow-hidden">
+        <VisitorForm onSubmit={handleVisitorSubmit} />
+      </div>
+    );
+  }
+
   return (
     <div className="app min-h-screen bg-transparent text-white relative md:pl-16 overflow-x-hidden">
       <Preloader />

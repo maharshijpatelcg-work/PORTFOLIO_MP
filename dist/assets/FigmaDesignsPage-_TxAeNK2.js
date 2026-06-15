@@ -1,1 +1,0 @@
-import{j as s}from"./index-D-PRpQEg.js";import t from"./FigmaDesigns-BBlhxeou.js";import"./index-3Bh6oS3f.js";const e=()=>s.jsx("div",{className:"pt-16 md:pt-0",children:s.jsx(t,{})});export{e as default};
